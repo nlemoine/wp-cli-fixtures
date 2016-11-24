@@ -66,7 +66,7 @@ abstract class Entity implements EntityInterface
      */
     protected function filterProperties()
     {
+        // @todo check public entity proerties
         $public_properties = array_column((new ReflectionObject($this))->getProperties(ReflectionProperty::IS_PUBLIC), 'name');
-        dump($public_properties);
     }
 }

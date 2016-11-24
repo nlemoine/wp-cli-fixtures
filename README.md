@@ -88,6 +88,29 @@ The example above will generate:
 
 Example: `Term` or `Attachment` objects **must** be placed before `Post` if they are referenced in your posts fixtures.
 
+### Entities
+
+#### `Post`
+
+`Hellonico\Fixtures\Entity\Post` can take any parameters available in [`wp_insert_post`](https://developer.wordpress.org/reference/functions/wp_insert_post/#parameters) + `meta` and `acf` custom keys.
+
+#### `Attachment`
+
+`Hellonico\Fixtures\Entity\Attachment` can take any parameters available in [`wp_insert_attachment`](https://developer.wordpress.org/reference/functions/wp_insert_attachment/#parameters) + `meta` and `file` custom keys. Note that `parent` must be passed with `post_parent` key.
+
+#### `Term`
+
+`Hellonico\Fixtures\Entity\Term` can take any parameters available in [`wp_insert_term`](https://developer.wordpress.org/reference/functions/wp_insert_term/#parameters) + `meta` custom key. Note that `term` and `taxonomy` must be respectively passed with `name` and `taxonomy ` key.
+
+#### `User`
+
+`Hellonico\Fixtures\Entity\User` can take any parameters available in [`wp_insert_user`](https://developer.wordpress.org/reference/functions/wp_insert_user/#parameters) + `meta` custom key.
+
+#### `Comment`
+
+`Hellonico\Fixtures\Entity\Comment` can take any parameters available in [`wp_insert_comment`](https://developer.wordpress.org/reference/functions/wp_insert_comment/#parameters) + `meta` custom key.
+
+
 ### Load fixtures
 
 ```
@@ -114,14 +137,41 @@ wp fixtures delete post
 
 Valid types are `post`, `attachment`, `comment`, `term`, `user`.
 
+### Add fake data to existing content
+
+`wp-cli-fixtures` allows you to add/update content to existing entities by passing the ID as a constructor argument. 
+
+Add fake data to post ID 1:
+
+```yaml
+Hellonico\Fixtures\Entity\Post:
+  my_post:
+    __construct: [1] # Pass your post ID as the constructor argument
+    post_title: '<sentence()>'
+    post_content: '<paragraphs(5, true)>'
+    post_excerpt: '<paragraphs(1, true)>'
+```
+
+Add fake data to 10 random existing posts:
+
+```yaml
+Hellonico\Fixtures\Entity\Post:
+  post{1..30}:
+    __construct: [<postId()>] # Pass your post ID as the constructor argument
+    post_title: '<sentence()>'
+    post_content: '<paragraphs(5, true)>'
+    post_excerpt: '<paragraphs(1, true)>'
+```
+
+
 ### Custom formatters
 
-In addition to formatters provided by [fzaninotto/Faker](https://github.com/fzaninotto/Faker), you can use custom formatters below.
+In addition to formatters provided by [fzaninotto/Faker](https://github.com/fzaninotto/Faker#formatters), you can use custom formatters below.
 
 #### `postId($args)`
 
 Returns an random existing post ID. 
-`$args` is optional and can list any arguments from [`get_posts`](https://developer.wordpress.org/reference/functions/get_posts/#parameters)
+`$args` is optional and can take any arguments from [`get_posts`](https://developer.wordpress.org/reference/functions/get_posts/#parameters)
 
 Example:
 
@@ -132,7 +182,7 @@ Example:
 #### `attachmentId($args)`
 
 Returns an random existing attachment ID. 
-`$args` is optional and can list any arguments from [`get_posts`](https://developer.wordpress.org/reference/functions/get_posts/#parameters)
+`$args` is optional and can take any arguments from [`get_posts`](https://developer.wordpress.org/reference/functions/get_posts/#parameters)
 
 Example:
 
@@ -143,7 +193,7 @@ Example:
 #### `termId($args)`
 
 Returns an random existing term ID. 
-`$args` is optional and can list any arguments from [`get_terms`](https://developer.wordpress.org/reference/functions/get_terms/#parameters)
+`$args` is optional and can take any arguments from [`get_terms`](https://developer.wordpress.org/reference/functions/get_terms/#parameters)
 
 Example:
 
@@ -154,7 +204,7 @@ Example:
 #### `userId($args)`
 
 Returns an random existing user ID. 
-`$args` is optional and can list any arguments from [`get_users`](https://developer.wordpress.org/reference/functions/get_users/#parameters)
+`$args` is optional and can take any arguments from [`get_users`](https://developer.wordpress.org/reference/functions/get_users/#parameters)
 
 Example:
 
