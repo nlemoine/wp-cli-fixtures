@@ -19,7 +19,7 @@
         "files": [ "command.php" ]
     },
     "require": {
-        "php": "^5.5.9 || ^7.0",
+        "php": "^7.0",
         "wp-cli/wp-cli": ">=0.23.0",
         "nelmio/alice": "dev-master"
     },
