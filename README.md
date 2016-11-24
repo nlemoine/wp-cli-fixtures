@@ -1,6 +1,8 @@
 wp-cli-fixtures
 =========================
 
+[![Build Status](https://travis-ci.org/nlemoine/wp-cli-fixtures.svg?branch=master)](https://travis-ci.org/nlemoine/wp-cli-fixtures)
+
 Inspired by [Faker](https://github.com/trendwerk/faker), this package provides an easy way to create massive and custom fake data for your WordPress installation.
 This package is based on [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker). Please refer to these package docs for advanced usage.
 
