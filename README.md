@@ -1,4 +1,4 @@
-hellonico/wp-cli-fixtures
+wp-cli-fixtures
 =========================
 
 Inspired by [Faker](https://github.com/trendwerk/faker), this package provides an easy way to create massive and custom fake data for your WordPress installation.
