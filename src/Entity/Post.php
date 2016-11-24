@@ -67,6 +67,23 @@ class Post extends Entity
             return false;
         }
 
+        // Add a 'fake' flag to dynamically created non hierarchical terms
+        if ($this->tax_input && is_array($this->tax_input)) {
+            foreach ($this->tax_input as $taxonomy => $terms) {
+                if (is_taxonomy_hierarchical($taxonomy)) {
+                    continue;
+                }
+                if (!is_array($terms) && $terms) {
+                    $terms = (array) $terms;
+                }
+                foreach ($terms as $term) {
+                    if (($term_obj = get_term_by('name', $term, $taxonomy)) !== false) {
+                        update_term_meta($term_obj->term_id, '_fake', true);
+                    }
+                }
+            }
+        }
+
         // Save meta
         $meta = $this->getMetaData();
         foreach ($meta as $meta_key => $meta_value) {

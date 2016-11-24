@@ -59,7 +59,9 @@ Hellonico\Fixtures\Entity\Post:
         _thumbnail_id: '@attachment*->ID'
     meta_input:
         _extra_field: '<paragraphs(1, true)>'
-    post_category: '3x @category*->term_id'
+    post_category: '3x @category*->term_id' # post_category only accepts IDs
+    tax_input:
+      post_tag: '5x <words(2, true)>' # Tags can be dynamically created
 
 Hellonico\Fixtures\Entity\Comment:
   comment{1..50}:
@@ -78,7 +80,7 @@ The example above will generate:
 - 10 users
 - 15 attachments
 - 10 terms (categories)
-- 30 posts with a thumbnail and 3 categories
+- 30 posts with a thumbnail, 3 categories and 5 tags
 - 50 comments
 
 **IMPORTANT:** Make sure referenced IDs are placed **BEFORE** they are used.

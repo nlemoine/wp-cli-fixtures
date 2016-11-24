@@ -51,7 +51,13 @@ class Term extends Entity
             ]
         );
 
-        $term_id = wp_update_term($this->term_id, $this->taxonomy, $this->getData());
+        // Update temp slug
+        $data = $this->getData();
+        if (!$this->slug && $this->name) {
+            $data['slug'] = sanitize_title($this->name);
+        }
+
+        $term_id = wp_update_term($this->term_id, $this->taxonomy, $data);
 
         if (is_wp_error($term_id)) {
             wp_delete_term($this->term_id, $this->taxonomy);
