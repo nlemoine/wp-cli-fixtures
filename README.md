@@ -54,7 +54,8 @@ Hellonico\Fixtures\Entity\Post:
     post_title: '<sentence()>'
     post_content: '<paragraphs(5, true)>'
     post_excerpt: '<paragraphs(1, true)>'
-    # meta and meta_input are basically the same, you can use one or both, they will be merged, just don't provide the same keys in each definition
+    # meta and meta_input are basically the same, you can use one or both, 
+    # they will be merged, just don't provide the same keys in each definition
     meta:
         _thumbnail_id: '@attachment*->ID'
     meta_input:
