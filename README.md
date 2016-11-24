@@ -37,7 +37,7 @@ Hellonico\Fixtures\Entity\User:
 Hellonico\Fixtures\Entity\Attachment:
   attachment{1..15}:
     post_title: '<sentence()>'
-    file (unique): <image(<uploadDir()>, 1200, 1200, 'cats')>
+    file: <image(<uploadDir()>, 1200, 1200, 'cats')>
 
 Hellonico\Fixtures\Entity\Term:
   category{1..10}:
@@ -100,4 +100,4 @@ Valid types are `post`, `attachment`, `comment`, `term`, `user`.
 
 ## Contributing
 
-This package follows PSR2 coding standards. Please ensure your PR sticks to these standards. 
+This package follows PSR2 coding standards. Please ensure your PR sticks to these standards.
