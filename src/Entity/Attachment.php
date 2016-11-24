@@ -7,6 +7,8 @@ use WP_CLI;
 class Attachment extends Post
 {
     public $file;
+    public $post_type = 'attachment';
+    public $post_status = 'inherit';
 
     /**
      * {@inheritDoc}
@@ -15,8 +17,8 @@ class Attachment extends Post
     {
         $this->ID = wp_insert_post([
             'post_title'  => sprintf('attachment-%s', uniqid()),
-            'post_type'   => 'attachment',
-            'post_status' => 'inherit',
+            'post_type'   => $this->post_type,
+            'post_status' => $this->post_status,
         ]);
         update_post_meta($this->ID, '_fake_attachment', true);
     }
@@ -26,8 +28,10 @@ class Attachment extends Post
      */
     public function persist()
     {
-        if (!$this->ID) {
-            @unlink($this->file);
+        if (!$this->ID || empty($this->file)) {
+            if (is_file($this->file)) {
+                @unlink($this->file);
+            }
             return false;
         }
 
