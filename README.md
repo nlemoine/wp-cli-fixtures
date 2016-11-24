@@ -19,7 +19,7 @@ Requires [wp-cli](https://github.com/wp-cli/wp-cli) >= 0.23.
 
 At the root of your project, create a `fixtures.yml` file:
 
-```
+```yaml
 Hellonico\Fixtures\Entity\User:
   user{1..10}:
     user_login (unique): <username()>
