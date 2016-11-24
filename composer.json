@@ -1,0 +1,40 @@
+{
+    "name": "hellonico/wp-cli-fixtures",
+    "description": "Generate fixtures",
+    "type": "wp-cli-package",
+    "homepage": "https://github.com/nlemoine/wp-cli-fixtures",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+          "name": "Nicolas Lemoine",
+          "email": "dev@helloni.co",
+          "homepage": "https://github.com/nlemoine"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Hellonico\\Fixtures\\": "src/"
+        },
+        "files": [ "command.php" ]
+    },
+    "require": {
+        "php": "^5.5.9 || ^7.0",
+        "wp-cli/wp-cli": ">=0.23.0",
+        "nelmio/alice": "dev-master"
+    },
+    "require-dev": {
+        "behat/behat": "~2.5",
+        "squizlabs/php_codesniffer": "2.*"
+    },
+    "scripts": {
+        "configure-phpcs": [
+            "if [ -f vendor/bin/phpcs ]; then \"vendor/bin/phpcs\" --config-set colors 1; fi",
+            "if [ -f vendor/bin/phpcs ]; then \"vendor/bin/phpcs\" --config-set show_progress 0; fi",
+            "if [ -f vendor/bin/phpcs ]; then \"vendor/bin/phpcs\" --config-set report_width auto; fi",
+            "if [ -f vendor/bin/phpcs ]; then \"vendor/bin/phpcs\" --config-set encoding utf-8; fi"
+        ],
+        "post-install-cmd": "@configure-phpcs",
+        "post-update-cmd":  "@configure-phpcs"
+    }
+}
