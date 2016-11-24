@@ -54,7 +54,7 @@ Hellonico\Fixtures\Entity\Post:
     post_title: '<sentence()>'
     post_content: '<paragraphs(5, true)>'
     post_excerpt: '<paragraphs(1, true)>'
-    # meta and meta_input are basically the same, you can use one or both, 
+    # 'meta' and 'meta_input' are basically the same, you can use one or both, 
     # they will be merged, just don't provide the same keys in each definition
     meta:
         _thumbnail_id: '@attachment*->ID'
@@ -82,7 +82,7 @@ The example above will generate:
 - 15 attachments
 - 10 terms (categories)
 - 30 posts with a thumbnail, 3 categories and 5 tags
-- 50 comments
+- 50 comments associated with post and user
 
 **IMPORTANT:** Make sure referenced IDs are placed **BEFORE** they are used.
 
