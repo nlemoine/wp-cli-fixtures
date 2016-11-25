@@ -1,6 +1,6 @@
 {
     "name": "hellonico/wp-cli-fixtures",
-    "description": "Generate fixtures",
+    "description": "Easily generate fake data for WordPress",
     "type": "wp-cli-package",
     "homepage": "https://github.com/nlemoine/wp-cli-fixtures",
     "license": "GPL-3.0+",
