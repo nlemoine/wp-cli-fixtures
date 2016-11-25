@@ -6,7 +6,7 @@ wp-cli-fixtures
 Inspired by [Faker](https://github.com/trendwerk/faker), this package provides an easy way to create massive and custom fake data for your WordPress installation.
 This package is based on [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker). Please refer to these packages docs for advanced usage.
 
-**DISCLAIMER:** This package is mostly intented to be used for development purposes. Don't use it on a production database or be sure to back it up first.
+**WARNING:** This package is mostly intented to be used for development purposes. Use it at your own risk, don't run it on a production database or make sure to back it up first.
 
 Quick links: [Install](#install) | [Usage](#usage) | [Contributing](#contributing)
 
@@ -26,7 +26,7 @@ At the root of your project, create a `fixtures.yml` file:
 ```yaml
 Hellonico\Fixtures\Entity\User:
   user{1..10}:
-    user_login (unique): <username()> # (unique) is required
+    user_login (unique): <username()> # '(unique)' is required
     user_pass: '123456'
     user_email: '<safeEmail()>'
     first_name: '<firstName()>'
@@ -41,13 +41,17 @@ Hellonico\Fixtures\Entity\User:
 Hellonico\Fixtures\Entity\Attachment:
   attachment{1..15}:
     post_title: '<sentence()>'
-    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # <uploadDir()> is required
+    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # '<uploadDir()>' is required
 
 Hellonico\Fixtures\Entity\Term:
   category{1..10}:
-    name (unique): '<words(2, true)>' # (unique) is required
+    name (unique): '<words(2, true)>' # '(unique)' is required
     description: '<sentence()>'
-    taxonomy: 'category'
+    taxonomy: 'category' # could be skipped, default to 'category'
+  tag{1..40}:
+    name (unique): '<words(2, true)>' # '(unique)' is required
+    description: '<sentence()>'
+    taxonomy: 'post_tag'
 
 Hellonico\Fixtures\Entity\Post:
   post{1..30}:
@@ -62,7 +66,7 @@ Hellonico\Fixtures\Entity\Post:
         _extra_field: '<paragraphs(1, true)>'
     post_category: '3x @category*->term_id' # post_category only accepts IDs
     tax_input:
-      post_tag: '5x <words(2, true)>' # Tags can be dynamically created
+      post_tag: '5x @tag*->term_id' # Tags can be dynamically created
 
 Hellonico\Fixtures\Entity\Comment:
   comment{1..50}:
@@ -80,7 +84,8 @@ The example above will generate:
 
 - 10 users
 - 15 attachments
-- 10 terms (categories)
+- 10 categories
+- 40 tags
 - 30 posts with a thumbnail, 3 categories and 5 tags
 - 50 comments associated with post and user
 
@@ -90,23 +95,23 @@ Example: `Term` or `Attachment` objects **must** be placed before `Post` if they
 
 ### Entities
 
-#### `Post`
+#### Post
 
 `Hellonico\Fixtures\Entity\Post` can take any parameters available in [`wp_insert_post`](https://developer.wordpress.org/reference/functions/wp_insert_post/#parameters) + `meta` and `acf` custom keys.
 
-#### `Attachment`
+#### Attachment
 
 `Hellonico\Fixtures\Entity\Attachment` can take any parameters available in [`wp_insert_attachment`](https://developer.wordpress.org/reference/functions/wp_insert_attachment/#parameters) + `meta` and `file` custom keys. Note that `parent` must be passed with `post_parent` key.
 
-#### `Term`
+#### Term
 
 `Hellonico\Fixtures\Entity\Term` can take any parameters available in [`wp_insert_term`](https://developer.wordpress.org/reference/functions/wp_insert_term/#parameters) + `meta` custom key. Note that `term` and `taxonomy` must be respectively passed with `name` and `taxonomy ` key.
 
-#### `User`
+#### User
 
 `Hellonico\Fixtures\Entity\User` can take any parameters available in [`wp_insert_user`](https://developer.wordpress.org/reference/functions/wp_insert_user/#parameters) + `meta` custom key.
 
-#### `Comment`
+#### Comment
 
 `Hellonico\Fixtures\Entity\Comment` can take any parameters available in [`wp_insert_comment`](https://developer.wordpress.org/reference/functions/wp_insert_comment/#parameters) + `meta` custom key.
 
@@ -141,7 +146,7 @@ Valid types are `post`, `attachment`, `comment`, `term`, `user`.
 
 `wp-cli-fixtures` allows you to add/update content to existing entities by passing the ID as a constructor argument. 
 
-Add fake data to post ID 1:
+Add/update data to post ID 1:
 
 ```yaml
 Hellonico\Fixtures\Entity\Post:
@@ -152,12 +157,12 @@ Hellonico\Fixtures\Entity\Post:
     post_excerpt: '<paragraphs(1, true)>'
 ```
 
-Add fake data to 10 random existing posts:
+Add/update data to 10 random existing posts:
 
 ```yaml
 Hellonico\Fixtures\Entity\Post:
-  post{1..30}:
-    __construct: [<postId()>] # Pass your post ID as the constructor argument
+  post{1..10}:
+    __construct: [<postId()>] # Use a custom formatters to return a random post ID as the constructor argument
     post_title: '<sentence()>'
     post_content: '<paragraphs(5, true)>'
     post_excerpt: '<paragraphs(1, true)>'

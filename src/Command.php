@@ -59,8 +59,8 @@ class Command extends WP_CLI_Command
 
         // Load file
         $loader = new NativeLoader($generator);
-        $objectSet = $loader->loadFile($file);
-        $objects = $objectSet->getObjects();
+        $object_set = $loader->loadFile($file);
+        $objects = $object_set->getObjects();
 
         if (empty($objects)) {
             WP_CLI::error('No fixtures has been found.');
