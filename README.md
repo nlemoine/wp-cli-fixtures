@@ -13,8 +13,7 @@ Quick links: [Install](#install) | [Usage](#usage) | [Contributing](#contributin
 ## Install
 
 ```
-cd ~/.wp-cli/packages
-composer require hellonico/wp-cli-fixtures
+cd ~/.wp-cli/packages && composer require hellonico/wp-cli-fixtures
 ```
 
 Requires [wp-cli](https://github.com/wp-cli/wp-cli) >= 0.23 and PHP >= 7.0.
