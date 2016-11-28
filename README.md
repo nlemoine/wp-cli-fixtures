@@ -69,8 +69,9 @@ Hellonico\Fixtures\Entity\Post:
         _extra_field: '<paragraphs(1, true)>'
     post_category: '3x @category*->term_id' # post_category only accepts IDs
     tax_input:
-      post_tag: '5x @tag*->term_id' # Tags can be dynamically created
-
+      post_tag: '5x @tag*->term_id'
+      # post_tag: '5x <words(2, true)>' # Or tags can be dynamically created
+      
 Hellonico\Fixtures\Entity\Comment:
   comment{1..50}:
     comment_post_ID: '@post*->ID'
