@@ -53,7 +53,7 @@ abstract class Entity implements EntityInterface
 
         // Handle meta that can be passed in Comment and Post entities
         $merge_attributes = ['meta_input', 'comment_meta'];
-        foreach( $merge_attributes as $attribute ) {
+        foreach ($merge_attributes as $attribute) {
             if (isset($this->{$attribute}) && is_array($this->{$attribute}) && !empty($this->{$attribute})) {
                 $this->meta = wp_parse_args($this->meta_input, $this->meta);
             }
