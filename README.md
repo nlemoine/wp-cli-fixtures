@@ -61,7 +61,7 @@ Hellonico\Fixtures\Entity\Post:
     post_title: '<sentence()>'
     post_content: '<paragraphs(5, true)>'
     post_excerpt: '<paragraphs(1, true)>'
-    # 'meta' and 'meta_input' are basically the same, you can use one or both, 
+    # 'meta' and 'meta_input' are basically the same, you can use one or both,
     # they will be merged, just don't provide the same keys in each definition
     meta:
         _thumbnail_id: '@attachment*->ID'
@@ -71,7 +71,7 @@ Hellonico\Fixtures\Entity\Post:
     tax_input:
       post_tag: '5x @tag*->term_id'
       # post_tag: '5x <words(2, true)>' # Or tags can be dynamically created
-      
+
 Hellonico\Fixtures\Entity\Comment:
   comment{1..50}:
     comment_post_ID: '@post*->ID'
@@ -81,6 +81,13 @@ Hellonico\Fixtures\Entity\Comment:
     comment_author_url: '<url()>'
     comment_content: '<paragraphs(2, true)>'
     comment_agent: '<userAgent()>'
+    comment_author_IP: '<ipv4()>'
+    # 'meta' and 'comment_meta' are basically the same, you can use one or both,
+    # they will be merged, just don't provide the same keys in each definition
+    comment_meta:
+        some_key: '<sentence()>'
+    meta:
+        another_key: '<sentence()>'
 
 ```
 
@@ -148,7 +155,7 @@ Valid types are `post`, `attachment`, `comment`, `term`, `user`.
 
 ### Add fake data to existing content
 
-`wp-cli-fixtures` allows you to add/update content to existing entities by passing the ID as a constructor argument. 
+`wp-cli-fixtures` allows you to add/update content to existing entities by passing the ID as a constructor argument.
 
 Add/update data to post ID 1:
 
@@ -179,7 +186,7 @@ In addition to formatters provided by [fzaninotto/Faker](https://github.com/fzan
 
 #### `postId($args)`
 
-Returns an random existing post ID. 
+Returns a random existing post ID.
 `$args` is optional and can take any arguments from [`get_posts`](https://developer.wordpress.org/reference/functions/get_posts/#parameters)
 
 Example:
@@ -190,7 +197,7 @@ Example:
 
 #### `attachmentId($args)`
 
-Returns an random existing attachment ID. 
+Returns a random existing attachment ID.
 `$args` is optional and can take any arguments from [`get_posts`](https://developer.wordpress.org/reference/functions/get_posts/#parameters)
 
 Example:
@@ -201,7 +208,7 @@ Example:
 
 #### `termId($args)`
 
-Returns an random existing term ID. 
+Returns a random existing term ID.
 `$args` is optional and can take any arguments from [`get_terms`](https://developer.wordpress.org/reference/functions/get_terms/#parameters)
 
 Example:
@@ -212,7 +219,7 @@ Example:
 
 #### `userId($args)`
 
-Returns an random existing user ID. 
+Returns a random existing user ID.
 `$args` is optional and can take any arguments from [`get_users`](https://developer.wordpress.org/reference/functions/get_users/#parameters)
 
 Example:

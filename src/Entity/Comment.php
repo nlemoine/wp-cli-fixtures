@@ -18,6 +18,9 @@ class Comment extends Entity
     public $user_id;
     public $comment_agent;
     public $comment_author_IP;
+    public $comment_approved;
+    public $comment_karma;
+    public $comment_meta;
 
     /**
      * {@inheritDoc}

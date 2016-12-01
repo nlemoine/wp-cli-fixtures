@@ -41,7 +41,7 @@ abstract class Entity implements EntityInterface
                 unset($data[$extra]);
             }
         }
-        return array_filter($data);
+        return $data;
     }
 
     /**
@@ -50,12 +50,16 @@ abstract class Entity implements EntityInterface
      */
     protected function getMetaData()
     {
-        // Handle meta_input in Post entity
-        if (isset($this->meta_input) && is_array($this->meta_input) && !empty($this->meta_input)) {
-            $this->meta = wp_parse_args($this->meta_input, $this->meta);
+
+        // Handle meta that can be passed in Comment and Post entities
+        $merge_attributes = ['meta_input', 'comment_meta'];
+        foreach( $merge_attributes as $attribute ) {
+            if (isset($this->{$attribute}) && is_array($this->{$attribute}) && !empty($this->{$attribute})) {
+                $this->meta = wp_parse_args($this->meta_input, $this->meta);
+            }
         }
         if ($this->meta && is_array($this->meta)) {
-            return array_filter($this->meta);
+            return $this->meta;
         }
         return [];
     }
@@ -66,7 +70,7 @@ abstract class Entity implements EntityInterface
      */
     protected function filterProperties()
     {
-        // @todo check public entity proerties
+        // @todo check public entity properties
         $public_properties = array_column((new ReflectionObject($this))->getProperties(ReflectionProperty::IS_PUBLIC), 'name');
     }
 }
