@@ -35,21 +35,19 @@ abstract class Entity implements EntityInterface
     {
 
         // Convert DateTime objects to string
-        foreach($this as $key => $value) {
-
-            if( $value instanceof DateTime ) {
+        foreach ($this as $key => $value) {
+            if ($value instanceof DateTime) {
                 $this->{$key} = $value->format('Y-m-d H:i:s');
             }
 
-            if( is_array($value) ) {
-                array_walk_recursive($value, function(&$v, $k) {
-                    if( $v instanceof DateTime ) {
+            if (is_array($value)) {
+                array_walk_recursive($value, function (&$v, $k) {
+                    if ($v instanceof DateTime) {
                         $v = $v->format('Y-m-d H:i:s');
                     }
                 });
                 $this->{$key} = $value;
             }
-
         }
 
         // Convert object properties to array and remove extra fields
@@ -101,8 +99,9 @@ abstract class Entity implements EntityInterface
      * @param  array $array
      * @return array
      */
-    private function filterData($array) {
-        return array_filter($array, function($v) {
+    private function filterData($array)
+    {
+        return array_filter($array, function ($v) {
             return !is_null($v);
         });
     }
