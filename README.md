@@ -14,7 +14,7 @@ Quick links: [Install](#install) | [Usage](#usage) | [Contributing](#contributin
 
 ## Install
 
-```
+```bash
 cd ~/.wp-cli/packages && composer require hellonico/wp-cli-fixtures
 ```
 
