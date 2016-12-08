@@ -4,6 +4,7 @@ namespace Hellonico\Fixtures\Entity;
 
 use ReflectionObject;
 use ReflectionProperty;
+use DateTime;
 
 abstract class Entity implements EntityInterface
 {
@@ -32,6 +33,26 @@ abstract class Entity implements EntityInterface
      */
     protected function getData()
     {
+
+        // Convert DateTime objects to string
+        foreach($this as $key => $value) {
+
+            if( $value instanceof DateTime ) {
+                $this->{$key} = $value->format('Y-m-d H:i:s');
+            }
+
+            if( is_array($value) ) {
+                array_walk_recursive($value, function(&$v, $k) {
+                    if( $v instanceof DateTime ) {
+                        $v = $v->format('Y-m-d H:i:s');
+                    }
+                });
+                $this->{$key} = $value;
+            }
+
+        }
+
+        // Convert object properties to array and remove extra fields
         $data = get_object_vars($this);
         if (isset($this->extra)) {
             foreach ($this->extra as $extra) {
@@ -41,7 +62,8 @@ abstract class Entity implements EntityInterface
                 unset($data[$extra]);
             }
         }
-        return $data;
+
+        return $this->filterData($data);
     }
 
     /**
@@ -55,11 +77,11 @@ abstract class Entity implements EntityInterface
         $merge_attributes = ['meta_input', 'comment_meta'];
         foreach ($merge_attributes as $attribute) {
             if (isset($this->{$attribute}) && is_array($this->{$attribute}) && !empty($this->{$attribute})) {
-                $this->meta = wp_parse_args($this->meta_input, $this->meta);
+                $this->meta = wp_parse_args($this->{$attribute}, $this->meta);
             }
         }
         if ($this->meta && is_array($this->meta)) {
-            return $this->meta;
+            return $this->filterData($this->meta);
         }
         return [];
     }
@@ -72,5 +94,16 @@ abstract class Entity implements EntityInterface
     {
         // @todo check public entity properties
         $public_properties = array_column((new ReflectionObject($this))->getProperties(ReflectionProperty::IS_PUBLIC), 'name');
+    }
+
+    /**
+     * Removes null values from array
+     * @param  array $array
+     * @return array
+     */
+    private function filterData($array) {
+        return array_filter($array, function($v) {
+            return !is_null($v);
+        });
     }
 }

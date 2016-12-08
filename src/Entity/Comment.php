@@ -12,7 +12,6 @@ class Comment extends Entity
     public $comment_author_url;
     public $comment_content;
     public $comment_date;
-    public $comment_date_gmt;
     public $comment_parent;
     public $comment_post_ID;
     public $user_id;

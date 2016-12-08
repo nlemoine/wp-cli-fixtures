@@ -32,9 +32,12 @@ Hellonico\Fixtures\Entity\User:
     user_login (unique): <username()> # '(unique)' is required
     user_pass: '123456'
     user_email: '<safeEmail()>'
+    user_url: '<url()>'
+    user_registered: '<dateTimeThisDecade()>'
     first_name: '<firstName()>'
     last_name: '<lastName()>'
     description: '<sentence()>'
+    role: 'subscriber'
     meta:
         phone_number: '<phoneNumber()>'
         address: '<streetAddress()>'
@@ -44,12 +47,14 @@ Hellonico\Fixtures\Entity\User:
 Hellonico\Fixtures\Entity\Attachment:
   attachment{1..15}:
     post_title: '<sentence()>'
+    post_date: '<dateTimeThisDecade()>'
     file: <image(<uploadDir()>, 1200, 1200, 'cats')> # '<uploadDir()>' is required
 
 Hellonico\Fixtures\Entity\Term:
   category{1..10}:
     name (unique): '<words(2, true)>' # '(unique)' is required
     description: '<sentence()>'
+    parent: '30%? <termId()>'
     taxonomy: 'category' # could be skipped, default to 'category'
   tag{1..40}:
     name (unique): '<words(2, true)>' # '(unique)' is required
@@ -61,6 +66,7 @@ Hellonico\Fixtures\Entity\Post:
     post_title: '<sentence()>'
     post_content: '<paragraphs(5, true)>'
     post_excerpt: '<paragraphs(1, true)>'
+    post_date: '<dateTimeThisDecade()>'
     # 'meta' and 'meta_input' are basically the same, you can use one or both,
     # they will be merged, just don't provide the same keys in each definition
     meta:
@@ -76,12 +82,15 @@ Hellonico\Fixtures\Entity\Comment:
   comment{1..50}:
     comment_post_ID: '@post*->ID'
     user_id: '@user*->ID'
+    comment_date: '<dateTimeThisDecade()>'
     comment_author: '<username()>'
     comment_author_email: '<safeEmail()>'
     comment_author_url: '<url()>'
     comment_content: '<paragraphs(2, true)>'
     comment_agent: '<userAgent()>'
     comment_author_IP: '<ipv4()>'
+    comment_approved: 1
+    comment_karma: '<numberBetween(1, 100)>'
     # 'meta' and 'comment_meta' are basically the same, you can use one or both,
     # they will be merged, just don't provide the same keys in each definition
     comment_meta:
@@ -104,11 +113,15 @@ The example above will generate:
 
 Example: `Term` or `Attachment` objects **must** be placed before `Post` if they are referenced in your posts fixtures.
 
+While making tests with fixtures, the [database command](https://github.com/ernilambar/database-command) package can be useful to reset database and start over.
+
 ### Entities
 
 #### Post
 
 `Hellonico\Fixtures\Entity\Post` can take any parameters available in [`wp_insert_post`](https://developer.wordpress.org/reference/functions/wp_insert_post/#parameters) + `meta` and `acf` custom keys.
+
+`post_date_gmt` and `post_modified_gmt` have been disabled, there are set from `post_date` and `post_modified`.
 
 #### Attachment
 
@@ -126,6 +139,7 @@ Example: `Term` or `Attachment` objects **must** be placed before `Post` if they
 
 `Hellonico\Fixtures\Entity\Comment` can take any parameters available in [`wp_insert_comment`](https://developer.wordpress.org/reference/functions/wp_insert_comment/#parameters) + `meta` custom key.
 
+`comment_date_gmt` has been disabled, it is set from `comment_date`.
 
 ### Load fixtures
 

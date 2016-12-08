@@ -15,11 +15,9 @@ class Post extends Entity
     public $post_content;
     public $post_content_filtered;
     public $post_date;
-    public $post_date_gmt;
     public $post_excerpt;
     public $post_mime_type;
     public $post_modified;
-    public $post_modified_gmt;
     public $post_name;
     public $post_parent;
     public $post_password;
@@ -27,7 +25,6 @@ class Post extends Entity
     public $post_title;
     public $post_type;
     public $to_ping;
-    public $terms;
     public $tax_input;
     public $post_category;
     public $meta_input;
