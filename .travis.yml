@@ -1,13 +1,34 @@
-language: php
-
 sudo: false
 
+language: php
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
+branches:
+  only:
+    - master
+
 php:
-  - '7.0'
+  - 7.0
+
+cache:
+  - composer
+  - $HOME/.composer/cache
+
+# env:
+#   global:
+#     - WP_CLI_BIN_DIR=/tmp/wp-cli-phar
+#   matrix:
+#     - WP_VERSION=latest
+#     - WP_VERSION=trunk
 
 before_script:
-  - composer self-update --no-interaction
-  - composer install --no-interaction --prefer-dist
+  - composer validate
+  # - bash bin/install-package-tests.sh
 
 script:
   - vendor/bin/phpcs --standard=ruleset.xml
+

@@ -24,7 +24,7 @@ Requires [wp-cli](https://github.com/wp-cli/wp-cli) >= 0.23 and PHP >= 7.0.
 
 ### Create fixtures
 
-At the root of your project, create a `fixtures.yml` file:
+At the root of your project, create a `fixtures.yml` file (you can download it [here](https://raw.githubusercontent.com/nlemoine/wp-cli-fixtures/master/examples/fixtures.yml)):
 
 ```yaml
 Hellonico\Fixtures\Entity\User:
@@ -97,7 +97,6 @@ Hellonico\Fixtures\Entity\Comment:
         some_key: '<sentence()>'
     meta:
         another_key: '<sentence()>'
-
 ```
 
 The example above will generate:
