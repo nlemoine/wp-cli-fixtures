@@ -46,6 +46,8 @@ class Attachment extends Post
                 WP_CLI::error(sprintf('An error occured while updating the attachment ID %d, it has been deleted.', $this->ID), false);
                 $this->setCurrentId(false);
                 return false;
+            } else {
+                $this->file = $upload['file'];
             }
         }
 

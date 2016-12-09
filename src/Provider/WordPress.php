@@ -86,7 +86,7 @@ class WordPress extends Base
      */
     public function termId($args = [])
     {
-        $query_args = array_merge(wp_parse_args($args), [
+        $query_args = array_merge(wp_parse_args($args, ['taxonomy' => 'category']), [
             'number'     => 0,
             'fields'     => 'ids',
             'hide_empty' => false,
@@ -94,7 +94,7 @@ class WordPress extends Base
 
         $terms = get_terms($query_args);
 
-        if (empty($terms)) {
+        if (empty($terms) || is_wp_error($terms)) {
             return false;
         }
 

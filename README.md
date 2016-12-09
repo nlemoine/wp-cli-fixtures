@@ -54,7 +54,7 @@ Hellonico\Fixtures\Entity\Term:
   category{1..10}:
     name (unique): '<words(2, true)>' # '(unique)' is required
     description: '<sentence()>'
-    parent: '30%? <termId()>'
+    parent: '50%? <termId(childless=1)>' # 50% of created categories will have a top level parent category
     taxonomy: 'category' # could be skipped, default to 'category'
   tag{1..40}:
     name (unique): '<words(2, true)>' # '(unique)' is required
@@ -113,7 +113,9 @@ The example above will generate:
 
 Example: `Term` or `Attachment` objects **must** be placed before `Post` if they are referenced in your posts fixtures.
 
-While making tests with fixtures, the [database command](https://github.com/ernilambar/database-command) package can be useful to reset database and start over.
+#### Testing
+
+While making tests with fixtures, the [database command](https://github.com/ernilambar/database-command) package can be useful to reset database faster than `wp fixtures delete` and start over.
 
 ### Entities
 
