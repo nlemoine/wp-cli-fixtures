@@ -37,7 +37,7 @@ Hellonico\Fixtures\Entity\User:
     first_name: '<firstName()>'
     last_name: '<lastName()>'
     description: '<sentence()>'
-    role: 'subscriber'
+    role: '<randomElement(["subscriber", "editor"])>'
     meta:
         phone_number: '<phoneNumber()>'
         address: '<streetAddress()>'
@@ -97,6 +97,7 @@ Hellonico\Fixtures\Entity\Comment:
         some_key: '<sentence()>'
     meta:
         another_key: '<sentence()>'
+
 ```
 
 The example above will generate:

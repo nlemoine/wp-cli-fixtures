@@ -8,7 +8,7 @@ Hellonico\Fixtures\Entity\User:
     first_name: '<firstName()>'
     last_name: '<lastName()>'
     description: '<sentence()>'
-    role: 'subscriber'
+    role: '<randomElement(["subscriber", "editor"])>'
     meta:
         phone_number: '<phoneNumber()>'
         address: '<streetAddress()>'
