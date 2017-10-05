@@ -57,6 +57,8 @@ class Command extends WP_CLI_Command
         // Add provider
         $generator->addProvider(new WordPress($generator));
 
+        WP_CLI::line('Loading fixtures... This might take some time depending on images number and connection speed');
+
         // Load file
         $loader = new NativeLoader($generator);
         $object_set = $loader->loadFile($file);
@@ -113,7 +115,9 @@ class Command extends WP_CLI_Command
             }
 
             $class = sprintf('%s\Entity\%s', __NAMESPACE__, ucfirst($type));
+            $confirm = WP_CLI::confirm(sprintf('Are you sure you want to delete all %s fixtures?', $type));
             $class::delete();
+            return;
         }
 
         $confirm = WP_CLI::confirm('Are you sure you want to delete all fixtures?');
