@@ -48,6 +48,16 @@ Hellonico\Fixtures\Entity\Post:
     tax_input:
       post_tag: '5x @tag*->term_id'
       # post_tag: '5x <words(2, true)>' # Or tags can be dynamically created
+  page{1..10}:
+    post_type: 'page'
+    post_title: '<sentence()>'
+    post_content: '<paragraphs(5, true)>'
+    post_date: '<dateTimeThisDecade()>'
+  product{1..15}:
+    post_title: '<sentence()>'
+    post_type: 'product'
+    post_content: '<paragraphs(5, true)>'
+    post_date: '<dateTimeThisDecade()>'
 
 Hellonico\Fixtures\Entity\Comment:
   comment{1..50}:

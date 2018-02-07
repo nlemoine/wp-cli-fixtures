@@ -1,7 +1,9 @@
 wp-cli-fixtures
 =========================
 
+[![Packagist](https://img.shields.io/packagist/v/hellonico/wp-cli-fixtures.svg)](https://packagist.org/packages/hellonico/wp-cli-fixtures)
 [![Build Status](https://travis-ci.org/nlemoine/wp-cli-fixtures.svg?branch=master)](https://travis-ci.org/nlemoine/wp-cli-fixtures)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/hellonico/wp-cli-fixtures.svg)](https://packagist.org/packages/hellonico/wp-cli-fixtures)
 
 Inspired by [Faker](https://github.com/trendwerk/faker), this package provides an easy way to create massive and custom fake data for your WordPress installation.
 This package is based on [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker). Please refer to these packages docs for advanced usage.
@@ -10,15 +12,15 @@ This package is based on [nelmio/alice](https://github.com/nelmio/alice) and [fz
 
 **WARNING:** This package is mostly intented to be used for development purposes. Use it at your own risk, don't run it on a production database or make sure to back it up first.
 
-Quick links: [Install](#install) | [Usage](#usage) | [Contributing](#contributing)
+Quick links: [Install](#install) | [Usage](#usage) | [Contribute](#contribute)
 
 ## Install
 
 ```bash
-wp package install https://github.com/nlemoine/wp-cli-fixtures.git
+wp package install git@github.com:nlemoine/wp-cli-fixtures.git
 ```
 
-Requires [wp-cli](https://github.com/wp-cli/wp-cli) >= 0.23 and PHP >= 7.0.
+Requires PHP `^7.0`.
 
 ## Usage
 
@@ -77,6 +79,16 @@ Hellonico\Fixtures\Entity\Post:
     tax_input:
       post_tag: '5x @tag*->term_id'
       # post_tag: '5x <words(2, true)>' # Or tags can be dynamically created
+  page{1..10}:
+    post_type: 'page'
+    post_title: '<sentence()>'
+    post_content: '<paragraphs(5, true)>'
+    post_date: '<dateTimeThisDecade()>'
+  product{1..15}:
+    post_title: '<sentence()>'
+    post_type: 'product'
+    post_content: '<paragraphs(5, true)>'
+    post_date: '<dateTimeThisDecade()>'
 
 Hellonico\Fixtures\Entity\Comment:
   comment{1..50}:
@@ -107,41 +119,13 @@ The example above will generate:
 - 10 categories
 - 40 tags
 - 30 posts with a thumbnail, 3 categories and 5 tags
+- 10 pages
+- 15 custom post types named 'product'
 - 50 comments associated with post and user
 
 **IMPORTANT:** Make sure referenced IDs are placed **BEFORE** they are used.
 
-Example: `Term` or `Attachment` objects **must** be placed before `Post` if they are referenced in your posts fixtures.
-
-#### Testing
-
-While making tests with fixtures, the [database command](https://github.com/ernilambar/database-command) package can be useful to reset database faster than `wp fixtures delete` and start over.
-
-### Entities
-
-#### Post
-
-`Hellonico\Fixtures\Entity\Post` can take any parameters available in [`wp_insert_post`](https://developer.wordpress.org/reference/functions/wp_insert_post/#parameters) + `meta` and `acf` custom keys.
-
-`post_date_gmt` and `post_modified_gmt` have been disabled, there are set from `post_date` and `post_modified`.
-
-#### Attachment
-
-`Hellonico\Fixtures\Entity\Attachment` can take any parameters available in [`wp_insert_attachment`](https://developer.wordpress.org/reference/functions/wp_insert_attachment/#parameters) + `meta` and `file` custom keys. Note that `parent` must be passed with `post_parent` key.
-
-#### Term
-
-`Hellonico\Fixtures\Entity\Term` can take any parameters available in [`wp_insert_term`](https://developer.wordpress.org/reference/functions/wp_insert_term/#parameters) + `meta` custom key. Note that `term` and `taxonomy` must be respectively passed with `name` and `taxonomy ` key.
-
-#### User
-
-`Hellonico\Fixtures\Entity\User` can take any parameters available in [`wp_insert_user`](https://developer.wordpress.org/reference/functions/wp_insert_user/#parameters) + `meta` custom key.
-
-#### Comment
-
-`Hellonico\Fixtures\Entity\Comment` can take any parameters available in [`wp_insert_comment`](https://developer.wordpress.org/reference/functions/wp_insert_comment/#parameters) + `meta` custom key.
-
-`comment_date_gmt` has been disabled, it is set from `comment_date`.
+Example: `Term` or `Attachment` objects **must** be placed before `Post` if you're references in your fixtures.
 
 ### Load fixtures
 
@@ -195,6 +179,31 @@ Hellonico\Fixtures\Entity\Post:
     post_excerpt: '<paragraphs(1, true)>'
 ```
 
+### Entities
+
+#### Post
+
+`Hellonico\Fixtures\Entity\Post` can take any parameters available in [`wp_insert_post`](https://developer.wordpress.org/reference/functions/wp_insert_post/#parameters) + `meta` key.
+
+`post_date_gmt` and `post_modified_gmt` have been disabled, there are set from `post_date` and `post_modified`.
+
+#### Attachment
+
+`Hellonico\Fixtures\Entity\Attachment` can take any parameters available in [`wp_insert_attachment`](https://developer.wordpress.org/reference/functions/wp_insert_attachment/#parameters) + `meta` and `file` custom keys. Note that `parent` must be passed with `post_parent` key.
+
+#### Term
+
+`Hellonico\Fixtures\Entity\Term` can take any parameters available in [`wp_insert_term`](https://developer.wordpress.org/reference/functions/wp_insert_term/#parameters) + `meta` custom key. Note that `term` and `taxonomy` must be respectively passed with `name` and `taxonomy` key.
+
+#### User
+
+`Hellonico\Fixtures\Entity\User` can take any parameters available in [`wp_insert_user`](https://developer.wordpress.org/reference/functions/wp_insert_user/#parameters) + `meta` custom key.
+
+#### Comment
+
+`Hellonico\Fixtures\Entity\Comment` can take any parameters available in [`wp_insert_comment`](https://developer.wordpress.org/reference/functions/wp_insert_comment/#parameters) + `meta` custom key.
+
+`comment_date_gmt` has been disabled, it is set from `comment_date`.
 
 ### Custom formatters
 
@@ -244,7 +253,10 @@ Example:
 <userId(role=subscriber)>
 ```
 
+#### Tips
 
-## Contributing
+While playing with fixtures, the [database command](https://github.com/ernilambar/database-command) package can be useful to reset database faster than `wp fixtures delete` and start over.
 
-This package follows PSR2 coding standards. Please ensure your PR sticks to these standards.
+## Contribute
+
+This package follows PSR2 coding standards and is tested with Behat. Execute `composer run tests` to ensure your PR passes.

@@ -6,9 +6,9 @@ use Faker\Provider\Base;
 
 class WordPress extends Base
 {
-
     /**
-     * Get upload dir
+     * Get upload dir.
+     *
      * @return string
      */
     public function uploadDir()
@@ -17,13 +17,16 @@ class WordPress extends Base
         if (isset($upload_dir['path']) && is_dir($upload_dir['path']) && is_writable($upload_dir['path'])) {
             return $upload_dir['path'];
         }
+
         return sys_get_temp_dir();
     }
 
     /**
-     * Get a random post ID
-     * @param  array|string  $args
-     * @return int|boolean
+     * Get a random post ID.
+     *
+     * @param array|string $args
+     *
+     * @return int|bool
      */
     public function postId($args = [])
     {
@@ -44,9 +47,11 @@ class WordPress extends Base
     }
 
     /**
-     * Get a random attachment ID
-     * @param  array|string  $args
-     * @return int|boolean
+     * Get a random attachment ID.
+     *
+     * @param array|string $args
+     *
+     * @return int|bool
      */
     public function attachmentId($args = [])
     {
@@ -55,19 +60,22 @@ class WordPress extends Base
             'post_status'    => 'inherit',
             'post_mime_type' => ['image/jpeg', 'image/gif', 'image/png', 'image/bmp', 'image/tiff', 'image/x-icon'],
         ];
+
         return $this->postId(array_merge(wp_parse_args($args), $defaults));
     }
 
     /**
-     * Get a random user ID
-     * @param  array|string  $args
-     * @return int|boolean
+     * Get a random user ID.
+     *
+     * @param array|string $args
+     *
+     * @return int|bool
      */
     public function userId($args = [])
     {
         $query_args = array_merge(wp_parse_args($args), [
-            'number'  => -1,
-            'fields'  => ['ID'],
+            'number' => -1,
+            'fields' => ['ID'],
         ]);
 
         $users = get_users($query_args);
@@ -80,9 +88,11 @@ class WordPress extends Base
     }
 
     /**
-     * Get a random term ID
-     * @param  array|string  $args
-     * @return int|boolean
+     * Get a random term ID.
+     *
+     * @param array|string $args
+     *
+     * @return int|bool
      */
     public function termId($args = [])
     {

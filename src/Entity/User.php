@@ -3,6 +3,7 @@
 namespace Hellonico\Fixtures\Entity;
 
 use WP_CLI;
+use WP_User_Query;
 
 class User extends Entity
 {
@@ -29,7 +30,7 @@ class User extends Entity
     public $show_admin_bar_front;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function create()
     {
@@ -43,7 +44,7 @@ class User extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function persist()
     {
@@ -64,12 +65,13 @@ class User extends Entity
             WP_CLI::error(html_entity_decode($user_id->get_error_message()), false);
             WP_CLI::error(sprintf('An error occured while updating the user ID %d, it has been deleted.', $this->ID), false);
             $this->setCurrentId(false);
+
             return false;
         }
 
         // Only way to update user login
         global $wpdb;
-        $wpdb->update($wpdb->users, [ 'user_login' => $this->user_login ], [ 'ID' => $this->ID ]);
+        $wpdb->update($wpdb->users, ['user_login' => $this->user_login], ['ID' => $this->ID]);
 
         // Save meta
         $meta = $this->getMetaData();
@@ -81,11 +83,12 @@ class User extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function exists($id)
     {
         global $wpdb;
+
         return (bool) $wpdb->get_var($wpdb->prepare("
             SELECT ID
             FROM {$wpdb->users}
@@ -95,7 +98,7 @@ class User extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setCurrentId($id)
     {
@@ -103,27 +106,31 @@ class User extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function delete()
     {
-        global $wpdb;
-        $ids = $wpdb->get_col("
-            SELECT user_id
-            FROM {$wpdb->usermeta}
-            WHERE meta_key = '_fake'
-            AND meta_value = '1'
-        ");
+        $query = new WP_User_Query([
+            'fields'     => 'ID',
+            'meta_query' => [
+                [
+                    'key'   => '_fake',
+                    'value' => true,
+                ],
+            ],
+        ]);
 
-        if (empty($ids)) {
+        if (empty($query->results)) {
             WP_CLI::line(WP_CLI::colorize('%BInfo:%n No fake users to delete'));
+
             return false;
         }
 
-        foreach ($ids as $id) {
+        foreach ($query->results as $id) {
             wp_delete_user($id);
         }
+        $count = count($query->results);
 
-        WP_CLI::success(sprintf('Deleted %s users', count($ids)));
+        WP_CLI::success(sprintf('%s user%s have been successfully deleted', $count, $count > 0 ? 's' : ''));
     }
 }

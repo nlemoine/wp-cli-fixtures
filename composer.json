@@ -1,30 +1,32 @@
 {
     "name": "hellonico/wp-cli-fixtures",
-    "description": "Easily generate fake data for WordPress",
     "type": "wp-cli-package",
+    "description": "Easily generate fake data for WordPress",
     "homepage": "https://github.com/nlemoine/wp-cli-fixtures",
     "license": "GPL-3.0+",
     "authors": [
         {
-          "name": "Nicolas Lemoine",
-          "email": "dev@helloni.co",
-          "homepage": "https://github.com/nlemoine"
+            "name": "Nicolas Lemoine",
+            "email": "dev@helloni.co",
+            "homepage": "https://github.com/nlemoine"
         }
     ],
-    "autoload": {
-        "psr-4": {
-            "Hellonico\\Fixtures\\": "src/"
-        },
-        "files": [ "command.php" ]
-    },
     "require": {
         "php": "^7.0",
-        "wp-cli/wp-cli": ">=0.23.0",
-        "nelmio/alice": "^3.0.1"
+        "nelmio/alice": "^3.0.1",
+        "wp-cli/wp-cli": "^0.23 || ^1.0.0"
     },
     "require-dev": {
         "behat/behat": "~2.5",
         "squizlabs/php_codesniffer": "2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hellonico\\Fixtures\\": "src/"
+        },
+        "files": [
+            "command.php"
+        ]
     },
     "scripts": {
         "configure-phpcs": [
@@ -34,7 +36,10 @@
             "if [ -f vendor/bin/phpcs ]; then \"vendor/bin/phpcs\" --config-set encoding utf-8; fi"
         ],
         "post-install-cmd": "@configure-phpcs",
-        "post-update-cmd":  "@configure-phpcs",
-        "test": "vendor/bin/phpcs"
+        "post-update-cmd": "@configure-phpcs",
+        "tests": [
+            "vendor/bin/phpcs",
+            "bash bin/test.sh"
+        ]
     }
 }

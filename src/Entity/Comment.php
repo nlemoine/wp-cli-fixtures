@@ -3,6 +3,7 @@
 namespace Hellonico\Fixtures\Entity;
 
 use WP_CLI;
+use WP_Comment_Query;
 
 class Comment extends Entity
 {
@@ -22,7 +23,7 @@ class Comment extends Entity
     public $comment_meta;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function create()
     {
@@ -30,11 +31,12 @@ class Comment extends Entity
             'comment_content' => sprintf('comment-%s', uniqid()),
         ]);
         update_comment_meta($this->comment_ID, '_fake', true);
+
         return $this->comment_ID;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function persist()
     {
@@ -50,6 +52,7 @@ class Comment extends Entity
             wp_delete_comment($this->comment_ID, true);
             WP_CLI::error(sprintf('An error occured while updating the comment ID %d, it has been deleted.', $this->comment_ID), false);
             $this->setCurrentId(false);
+
             return false;
         }
 
@@ -63,11 +66,12 @@ class Comment extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function exists($id)
     {
         global $wpdb;
+
         return (bool) $wpdb->get_var($wpdb->prepare("
             SELECT comment_ID
             FROM {$wpdb->comments}
@@ -77,7 +81,7 @@ class Comment extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setCurrentId($id)
     {
@@ -85,28 +89,31 @@ class Comment extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function delete()
     {
-        global $wpdb;
+        $query = new WP_Comment_Query([
+            'fields'     => 'ids',
+            'meta_query' => [
+                [
+                    'key'   => '_fake',
+                    'value' => true,
+                ],
+            ],
+        ]);
 
-        $ids = $wpdb->get_col("
-            SELECT comment_id
-            FROM {$wpdb->commentmeta}
-            WHERE meta_key = '_fake'
-            AND meta_value = 1
-        ");
-
-        if (empty($ids)) {
+        if (empty($query->comments)) {
             WP_CLI::line(WP_CLI::colorize('%BInfo:%n No fake comments to delete'));
+
             return false;
         }
 
-        foreach ($ids as $id) {
+        foreach ($query->comments as $id) {
             wp_delete_comment($id, true);
         }
+        $count = count($query->comments);
 
-        WP_CLI::success(sprintf('Deleted %s comments', count($ids)));
+        WP_CLI::success(sprintf('%s comment%s have been successfully deleted', $count, $count > 0 ? 's' : ''));
     }
 }

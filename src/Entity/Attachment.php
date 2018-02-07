@@ -3,15 +3,16 @@
 namespace Hellonico\Fixtures\Entity;
 
 use WP_CLI;
+use WP_Query;
 
 class Attachment extends Post
 {
     public $file;
-    public $post_type = 'attachment';
+    public $post_type   = 'attachment';
     public $post_status = 'inherit';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function create()
     {
@@ -20,11 +21,11 @@ class Attachment extends Post
             'post_type'   => $this->post_type,
             'post_status' => $this->post_status,
         ]);
-        update_post_meta($this->ID, '_fake_attachment', true);
+        update_post_meta($this->ID, '_fake', true);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function persist()
     {
@@ -32,6 +33,7 @@ class Attachment extends Post
             if (is_file($this->file)) {
                 @unlink($this->file);
             }
+
             return false;
         }
 
@@ -45,36 +47,46 @@ class Attachment extends Post
                 wp_delete_attachment($this->ID, true);
                 WP_CLI::error(sprintf('An error occured while updating the attachment ID %d, it has been deleted.', $this->ID), false);
                 $this->setCurrentId(false);
+
                 return false;
             } else {
                 $this->file = $upload['file'];
             }
         }
 
-        $file_type  = wp_check_filetype($file_name);
+        $file_type = wp_check_filetype($file_name);
 
         // Set required attachment properties
-        $this->post_type      = 'attachment';
-        $this->post_status    = 'inherit';
         $this->post_mime_type = $file_type['type'];
         $this->guid           = $upload_dir['url'] . '/' . $file_name;
 
+        // Set post title from file name
         if (empty($this->post_title)) {
             $this->post_title = sanitize_file_name(pathinfo($file_name, PATHINFO_FILENAME));
         }
 
-        // guid can't be updated once post is created
-        global $wpdb;
-        $wpdb->update($wpdb->posts, [ 'guid' => $this->guid ], [ 'ID' => $this->ID ]);
-
         // Update entity
         $attachment_id = wp_insert_attachment($this->getData(), $this->file);
+
+        // Update guid and slug (can't be updated once post is created)
+        global $wpdb;
+        $wpdb->update(
+            $wpdb->posts,
+            [
+                'guid'      => $this->guid,
+                'post_name' => sanitize_title($this->post_title),
+            ],
+            [
+                'ID' => $this->ID,
+            ]
+        );
 
         // Handle errors
         if (empty($attachment_id)) {
             wp_delete_attachment($this->ID, true);
             WP_CLI::error(sprintf('An error occured while updating the attachment ID %d, it has been deleted.', $this->ID), false);
             $this->setCurrentId(false);
+
             return false;
         }
 
@@ -94,28 +106,34 @@ class Attachment extends Post
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function delete()
     {
-        global $wpdb;
+        $query = new WP_Query([
+            'fields'     => 'ids',
+            'meta_query' => [
+                [
+                    'key'   => '_fake',
+                    'value' => true,
+                ],
+            ],
+            'post_status'    => 'any',
+            'post_type'      => 'attachment',
+            'posts_per_page' => -1,
+        ]);
 
-        $ids = $wpdb->get_col("
-            SELECT post_id
-            FROM {$wpdb->prefix}postmeta
-            WHERE meta_key = '_fake_attachment'
-            AND meta_value = 1
-        ");
-
-        if (empty($ids)) {
+        if (empty($query->posts)) {
             WP_CLI::line(WP_CLI::colorize('%BInfo:%n No fake attachments to delete'));
+
             return false;
         }
 
-        foreach ($ids as $id) {
+        foreach ($query->posts as $id) {
             wp_delete_attachment($id, true);
         }
+        $count = count($query->posts);
 
-        WP_CLI::success(sprintf('Deleted %s attachments', count($ids)));
+        WP_CLI::success(sprintf('%s attachment%s have been successfully deleted', $count, $count > 0 ? 's' : ''));
     }
 }

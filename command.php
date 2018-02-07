@@ -4,7 +4,7 @@ namespace Hellonico\Fixtures;
 
 use WP_CLI;
 
-if (! class_exists('WP_CLI')) {
+if (!class_exists('WP_CLI')) {
     return;
 }
 

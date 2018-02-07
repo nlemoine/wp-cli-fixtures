@@ -3,6 +3,7 @@
 namespace Hellonico\Fixtures\Entity;
 
 use WP_CLI;
+use WP_Term_Query;
 
 class Term extends Entity
 {
@@ -14,7 +15,7 @@ class Term extends Entity
     public $parent;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function create()
     {
@@ -22,15 +23,17 @@ class Term extends Entity
         if (is_wp_error($term)) {
             WP_CLI::error(html_entity_decode($term->get_error_message()), false);
             $this->setCurrentId(false);
+
             return $term;
         }
         $this->term_id = $term['term_id'];
         update_term_meta($this->term_id, '_fake', true);
+
         return $this->term_id;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function persist()
     {
@@ -43,11 +46,11 @@ class Term extends Entity
         $wpdb->update(
             $wpdb->term_taxonomy,
             [
-                'taxonomy' => $this->taxonomy
+                'taxonomy' => $this->taxonomy,
             ],
             [
                 'taxonomy' => 'category',
-                'term_id' => $this->term_id
+                'term_id'  => $this->term_id,
             ]
         );
 
@@ -64,6 +67,7 @@ class Term extends Entity
             WP_CLI::error(html_entity_decode($term_id->get_error_message()), false);
             WP_CLI::error(sprintf('An error occured while updating the term ID %d, it has been deleted.', $this->term_id), false);
             $this->setCurrentId(false);
+
             return false;
         }
 
@@ -77,11 +81,12 @@ class Term extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function exists($id)
     {
         global $wpdb;
+
         return (bool) $wpdb->get_var($wpdb->prepare("
             SELECT term_id
             FROM {$wpdb->terms}
@@ -91,7 +96,7 @@ class Term extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setCurrentId($id)
     {
@@ -99,32 +104,36 @@ class Term extends Entity
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function delete()
     {
-        global $wpdb;
+        $query = new WP_Term_Query([
+            'fields'     => 'ids',
+            'hide_empty' => false,
+            'meta_query' => [
+                [
+                    'key'   => '_fake',
+                    'value' => true,
+                ],
+            ],
+        ]);
 
-        $ids = $wpdb->get_col("
-            SELECT term_id
-            FROM {$wpdb->termmeta}
-            WHERE meta_key = '_fake'
-            AND meta_value = 1
-        ");
-
-        if (empty($ids)) {
+        if (empty($query->terms)) {
             WP_CLI::line(WP_CLI::colorize('%BInfo:%n No fake terms to delete'));
+
             return false;
         }
 
-        foreach ($ids as $id) {
+        foreach ($query->terms as $id) {
             $term = get_term($id);
             if (!isset($term->taxonomy)) {
                 continue;
             }
             wp_delete_term($id, $term->taxonomy);
         }
+        $count = count($query->terms);
 
-        WP_CLI::success(sprintf('Deleted %s terms', count($ids)));
+        WP_CLI::success(sprintf('%s term%s have been successfully deleted', $count, $count > 0 ? 's' : ''));
     }
 }

@@ -2,38 +2,39 @@
 
 namespace Hellonico\Fixtures\Entity;
 
+use DateTime;
 use ReflectionObject;
 use ReflectionProperty;
-use DateTime;
 
 abstract class Entity implements EntityInterface
 {
-
     /**
-     * Meta
+     * Meta.
+     *
      * @var array
      */
     public $meta;
 
     /**
-     * Constructor
+     * Constructor.
+     *
      * @param int $id
      */
     public function __construct($id = false)
     {
-        if ($id && is_numeric($id) && $id > 0) {
+        if ($id && absint($id) > 0) {
             return $this->exists($id) ? $this->setCurrentId($id) : $this->setCurrentId(false);
         }
         $this->create();
     }
 
     /**
-     * Get object data
+     * Get object data.
+     *
      * @return array
      */
     protected function getData()
     {
-
         // Convert DateTime objects to string
         foreach ($this as $key => $value) {
             if ($value instanceof DateTime) {
@@ -65,12 +66,12 @@ abstract class Entity implements EntityInterface
     }
 
     /**
-     * Get object metadata
+     * Get object metadata.
+     *
      * @return array
      */
     protected function getMetaData()
     {
-
         // Handle meta that can be passed in Comment and Post entities
         $merge_attributes = ['meta_input', 'comment_meta'];
         foreach ($merge_attributes as $attribute) {
@@ -81,12 +82,14 @@ abstract class Entity implements EntityInterface
         if ($this->meta && is_array($this->meta)) {
             return $this->filterData($this->meta);
         }
+
         return [];
     }
 
     /**
-     * [filterProperties description]
-     * @return boolean
+     * [filterProperties description].
+     *
+     * @return bool
      */
     protected function filterProperties()
     {
@@ -95,8 +98,10 @@ abstract class Entity implements EntityInterface
     }
 
     /**
-     * Removes null values from array
-     * @param  array $array
+     * Removes null values from array.
+     *
+     * @param array $array
+     *
      * @return array
      */
     private function filterData($array)

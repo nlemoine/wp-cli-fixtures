@@ -4,34 +4,38 @@ namespace Hellonico\Fixtures\Entity;
 
 interface EntityInterface
 {
-
     /**
-     * Set current entity ID
+     * Set current entity ID.
+     *
      * @param int $id
      */
     public function setCurrentId($id);
 
     /**
-     * Check if entity
-     * @param  int $id
-     * @return boolean
+     * Check if entity.
+     *
+     * @param int $id
+     *
+     * @return bool
      */
     public function exists($id);
 
     /**
-     * Create object
+     * Create object.
+     *
      * @return int Database ID
      */
     public function create();
 
     /**
-     * Persist object
-     * @return boolean
+     * Persist object.
+     *
+     * @return bool
      */
     public function persist();
 
     /**
-     * Delete fixtures
+     * Delete fixtures.
      */
     public static function delete();
 }

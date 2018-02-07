@@ -2,17 +2,16 @@
 
 namespace Hellonico\Fixtures;
 
-use WP_CLI_Command;
-use WP_CLI;
-use function WP_CLI\Utils\make_progress_bar;
-use Nelmio\Alice\Loader\NativeLoader;
 use Faker\Factory;
 use Hellonico\Fixtures\Provider\WordPress;
+use Nelmio\Alice\Loader\NativeLoader;
 use ReflectionClass;
+use WP_CLI;
+use WP_CLI_Command;
+use function WP_CLI\Utils\make_progress_bar;
 
 class Command extends WP_CLI_Command
 {
-
     /**
      * Loads and save fixtures.
      *
@@ -24,7 +23,6 @@ class Command extends WP_CLI_Command
      * ## EXAMPLES
      *
      *     wp fixtures load --file=fixtures/data.yml
-     *
      */
     public function load($args, $assoc_args)
     {
@@ -41,7 +39,7 @@ class Command extends WP_CLI_Command
             wp_set_current_user(min($ids));
         }
 
-        // Remove revisions, it duplicates posts when there are updated
+        // Remove revisions, it duplicates posts when they are updated
         remove_action('post_updated', 'wp_save_post_revision');
 
         // Disable user notifications
@@ -61,25 +59,27 @@ class Command extends WP_CLI_Command
 
         // Load file
         $loader = new NativeLoader($generator);
+
         $object_set = $loader->loadFile($file);
-        $objects = $object_set->getObjects();
+        $objects    = $object_set->getObjects();
 
         if (empty($objects)) {
             WP_CLI::error('No fixtures has been found.');
         }
 
-        // Perists objects
-        $progress = make_progress_bar('Generating and saving fixtures...', count($objects));
-        $counts = [];
+        // Perist objects
+        $progress = make_progress_bar('Saving fixtures...', count($objects));
+        $counts   = [];
         foreach ($objects as $object) {
-            if ($object->persist()) {
-                $reflect    = new ReflectionClass($object);
-                $class_name = strtolower($reflect->getShortName());
-                if (!isset($counts[$class_name])) {
-                    $counts[$class_name] = 0;
-                }
-                $counts[$class_name]++;
+            if (!$object->persist()) {
+                continue;
             }
+            // Try to distingish created content types (e.g. comment, post, page, CPT, term, etc.)
+            $type = $this->getContentType($object);
+            if (!isset($counts[$type])) {
+                $counts[$type] = 0;
+            }
+            ++$counts[$type];
             $progress->tick();
         }
         $progress->finish();
@@ -96,14 +96,15 @@ class Command extends WP_CLI_Command
      *
      * [<type>]
      * : Specify the fixture type to delete
+     * [--yes]
+     * : Delete the fake data without a confirmation prompt.
      *
      * ## EXAMPLES
      *
      *     wp fixtures delete post
      *     wp fixtures delete
-     *
      */
-    public function delete($args = [])
+    public function delete($args = [], array $assoc_args = [])
     {
         $valid_types = ['post', 'attachment', 'term', 'comment', 'user'];
 
@@ -114,9 +115,10 @@ class Command extends WP_CLI_Command
                 WP_CLI::error(sprintf('"%s" is not a valid type, valid types are: %s', $type, implode(', ', $valid_types)));
             }
 
-            $class = sprintf('%s\Entity\%s', __NAMESPACE__, ucfirst($type));
-            $confirm = WP_CLI::confirm(sprintf('Are you sure you want to delete all %s fixtures?', $type));
+            $class   = sprintf('%s\Entity\%s', __NAMESPACE__, ucfirst($type));
+            $confirm = WP_CLI::confirm(sprintf('Are you sure you want to delete all %s fixtures?', $type), $assoc_args);
             $class::delete();
+
             return;
         }
 
@@ -126,5 +128,24 @@ class Command extends WP_CLI_Command
             $class = sprintf('%s\Entity\%s', __NAMESPACE__, ucfirst($type));
             $class::delete();
         }
+    }
+
+    /**
+     * Get content type.
+     *
+     * @param object $object
+     *
+     * @return string
+     */
+    private function getContentType($object)
+    {
+        $reflect = new ReflectionClass($object);
+        $type    = strtolower($reflect->getShortName());
+
+        if ('post' === $type) {
+            $type = $object->post_type;
+        }
+
+        return $type;
     }
 }

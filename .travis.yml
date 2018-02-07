@@ -1,4 +1,5 @@
 sudo: false
+dist: trusty
 
 language: php
 
@@ -7,25 +8,44 @@ notifications:
     on_success: never
     on_failure: change
 
-php:
-  - 7.0
-  - 7.1
+branches:
+  only:
+    - master
 
 cache:
-  - composer
-  - $HOME/.composer/cache
+  directories:
+    - $HOME/.composer/cache
 
-# env:
-#   global:
-#     - WP_CLI_BIN_DIR=/tmp/wp-cli-phar
-#   matrix:
-#     - WP_VERSION=latest
-#     - WP_VERSION=trunk
+env:
+  global:
+    - PATH="$TRAVIS_BUILD_DIR/vendor/bin:$PATH"
+    - WP_CLI_BIN_DIR="$TRAVIS_BUILD_DIR/vendor/bin"
+
+matrix:
+  include:
+    - php: 7.2
+      env: WP_VERSION=latest
+    - php: 7.1
+      env: WP_VERSION=latest
+    - php: 7.0
+      env: WP_VERSION=latest
+
+before_install:
+  - |
+    # Remove Xdebug for a huge performance increase:
+    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
+      phpenv config-rm xdebug.ini
+    else
+      echo "xdebug.ini does not exist"
+    fi
+
+install:
+  - composer require wp-cli/wp-cli:dev-master
+  - composer install
+  - bash bin/install-package-tests.sh
 
 before_script:
   - composer validate
-  - composer install --no-interaction --prefer-dist
-  # - bash bin/install-package-tests.sh
 
 script:
-  - vendor/bin/phpcs
+  - bash bin/test.sh
