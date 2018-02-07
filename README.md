@@ -260,3 +260,4 @@ While playing with fixtures, the [database command](https://github.com/ernilamba
 ## Contribute
 
 This package follows PSR2 coding standards and is tested with Behat. Execute `composer run tests` to ensure your PR passes.
+
