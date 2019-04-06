@@ -6,10 +6,10 @@ Feature: Custom fixtures file
     """
     Hellonico\Fixtures\Entity\Post:
       post{1..5}:
-        post_title: '<sentence()>'
-        post_content: '<paragraphs(5, true)>'
-        post_excerpt: '<paragraphs(1, true)>'
-        post_date: '<dateTimeThisDecade()>'
+        post_title: <sentence()>
+        post_content: <paragraphs(5, true)>
+        post_excerpt: <paragraphs(1, true)>
+        post_date: <dateTimeThisDecade()>
     """
 
     When I run `wp fixtures load --file=post.yml`

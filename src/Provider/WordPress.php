@@ -3,9 +3,43 @@
 namespace Hellonico\Fixtures\Provider;
 
 use Faker\Provider\Base;
+use Faker\Provider\File;
 
 class WordPress extends Base
 {
+
+    /**
+     * Get a file content
+     *
+     * @param  string $file
+     * @return string
+     */
+    public function fileContent($file)
+    {
+        if (!is_file($file)) {
+            throw new \InvalidArgumentException(sprintf('File %s does not exist.', $file));
+        }
+
+        return file_get_contents($file);
+    }
+
+    /**
+     * Get files
+     *
+     * @param  string  $src
+     * @param  string  $target
+     * @param  boolean $fullpath
+     * @return string
+     */
+    public function fileIn($src = '/tmp', $target = false, $fullpath = true)
+    {
+        if (false === $target) {
+            $target = $this->uploadDir();
+        }
+
+        return File::file($src, $target, $fullpath);
+    }
+
     /**
      * Get upload dir.
      *

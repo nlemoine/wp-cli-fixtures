@@ -115,12 +115,15 @@ class Post extends Entity
         }
 
         // Save ACF fields
-        // if (class_exists('acf') && !empty($this->acf) && is_array($this->acf)) {
-        //     foreach ($this->acf as $name => $value) {
-        //         $field = acf_get_field($name);
-        //         update_field($field['key'], $value, $post_id);
-        //     }
-        // }
+        if (class_exists('acf') && !empty($this->acf) && is_array($this->acf)) {
+            foreach ($this->acf as $name => $value) {
+                $field = acf_get_field($name);
+                if (!$field) {
+                    continue;
+                }
+                update_field($field['key'], $value, $post_id);
+            }
+        }
 
         return true;
     }

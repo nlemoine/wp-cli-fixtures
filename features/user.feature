@@ -7,19 +7,19 @@ Feature: User fixtures
     Hellonico\Fixtures\Entity\User:
       user{1..5}:
         user_login (unique): <username()>
-        user_pass: '123456'
-        user_email: '<safeEmail()>'
-        user_url: '<url()>'
-        user_registered: '<dateTimeThisDecade()>'
-        first_name: '<firstName()>'
-        last_name: '<lastName()>'
-        description: '<sentence()>'
-        role: '<randomElement(["subscriber", "editor"])>'
+        user_pass: 123456
+        user_email: <safeEmail()>
+        user_url: <url()>
+        user_registered: <dateTimeThisDecade()>
+        first_name: <firstName()>
+        last_name: <lastName()>
+        description: <sentence()>
+        role: <randomElement(['subscriber', 'editor'])>
         meta:
-          phone_number: '<phoneNumber()>'
-          address: '<streetAddress()>'
-          zip: '<postcode()>'
-          city: '<city()>'
+          phone_number: <phoneNumber()>
+          address: <streetAddress()>
+          zip: <postcode()>
+          city: <city()>
     """
 
     When I run `wp fixtures load`
@@ -47,8 +47,8 @@ Feature: User fixtures
     Hellonico\Fixtures\Entity\User:
       user{1..5}:
         user_login (unique): <username()>
-        user_pass: '123456'
-        user_email: '<safeEmail()>'
+        user_pass: 123456
+        user_email: <safeEmail()>
     """
 
     When I run `wp fixtures load`

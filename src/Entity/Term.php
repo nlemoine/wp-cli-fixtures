@@ -13,6 +13,7 @@ class Term extends Entity
     public $taxonomy = 'category';
     public $description;
     public $parent;
+    public $acf;
 
     /**
      * {@inheritdoc}
@@ -75,6 +76,14 @@ class Term extends Entity
         $meta = $this->getMetaData();
         foreach ($meta as $meta_key => $meta_value) {
             update_term_meta($this->term_id, $meta_key, $meta_value);
+        }
+
+        // Save ACF fields
+        if (class_exists('acf') && !empty($this->acf) && is_array($this->acf)) {
+            foreach ($this->acf as $name => $value) {
+                $field = acf_get_field($name);
+                update_field($field['key'], $value, $this->taxonomy . '_' . $this->term_id);
+            }
         }
 
         return true;

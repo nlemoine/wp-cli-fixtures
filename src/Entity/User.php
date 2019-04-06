@@ -28,6 +28,7 @@ class User extends Entity
     public $admin_color;
     public $use_ssl;
     public $show_admin_bar_front;
+    public $acf;
 
     /**
      * {@inheritdoc}
@@ -77,6 +78,14 @@ class User extends Entity
         $meta = $this->getMetaData();
         foreach ($meta as $meta_key => $meta_value) {
             update_user_meta($this->ID, $meta_key, $meta_value);
+        }
+
+        // Save ACF fields
+        if (class_exists('acf') && !empty($this->acf) && is_array($this->acf)) {
+            foreach ($this->acf as $name => $value) {
+                $field = acf_get_field($name);
+                update_field($field['key'], $value, 'user_' . $this->ID);
+            }
         }
 
         return true;

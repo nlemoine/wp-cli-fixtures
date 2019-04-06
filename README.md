@@ -20,7 +20,7 @@ Quick links: [Install](#install) | [Usage](#usage) | [Contribute](#contribute)
 wp package install git@github.com:nlemoine/wp-cli-fixtures.git
 ```
 
-Requires PHP `^7.0`.
+Requires PHP `^7.1`.
 
 ## Usage
 
@@ -29,87 +29,134 @@ Requires PHP `^7.0`.
 At the root of your project, create a `fixtures.yml` file (you can download it [here](https://raw.githubusercontent.com/nlemoine/wp-cli-fixtures/master/examples/fixtures.yml)):
 
 ```yaml
+#
+# USERS
+#
 Hellonico\Fixtures\Entity\User:
   user{1..10}:
     user_login (unique): <username()> # '(unique)' is required
-    user_pass: '123456'
-    user_email: '<safeEmail()>'
-    user_url: '<url()>'
-    user_registered: '<dateTimeThisDecade()>'
-    first_name: '<firstName()>'
-    last_name: '<lastName()>'
-    description: '<sentence()>'
-    role: '<randomElement(["subscriber", "editor"])>'
+    user_pass: 123456
+    user_email: <safeEmail()>
+    user_url: <url()>
+    user_registered: <dateTimeThisDecade()>
+    first_name: <firstName()>
+    last_name: <lastName()>
+    description: <sentence()>
+    role: <randomElement(['subscriber', 'editor'])>
     meta:
-        phone_number: '<phoneNumber()>'
-        address: '<streetAddress()>'
-        zip: '<postcode()>'
-        city: '<city()>'
+      phone_number: <phoneNumber()>
+      address: <streetAddress()>
+      zip: <postcode()>
+      city: <city()>
+    acf:
+      facebook_url: <url>
+      twitter_url: <url>
 
+#
+# ATTACHMENTS
+#
 Hellonico\Fixtures\Entity\Attachment:
-  attachment{1..15}:
-    post_title: '<sentence()>'
-    post_date: '<dateTimeThisDecade()>'
-    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # '<uploadDir()>' is required
+  default (template): # templates can be extended to keep things DRY
+    post_title: <words(2, true)>
+    post_date: <dateTimeThisDecade()>
+    post_content: <paragraphs(5, true)>
+  images{1..15} (extends default):
+    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # <uploadDir()> is required
+  documents{1..2} (extends default):
+    file: <fileIn('relative/path/to/pdfs')>
+  custom_images{1..10} (extends default):
+    file: <fileIn('relative/path/to/images')>
 
+#
+# TERMS
+#
 Hellonico\Fixtures\Entity\Term:
   category{1..10}:
-    name (unique): '<words(2, true)>' # '(unique)' is required
-    description: '<sentence()>'
+    name (unique): <words(2, true)> # '(unique)' is required
+    description: <sentence()>
     parent: '50%? <termId(childless=1)>' # 50% of created categories will have a top level parent category
     taxonomy: 'category' # could be skipped, default to 'category'
   tag{1..40}:
-    name (unique): '<words(2, true)>' # '(unique)' is required
-    description: '<sentence()>'
-    taxonomy: 'post_tag'
+    name (unique): <words(2, true)> # '(unique)' is required
+    description: <sentence()>
+    taxonomy: post_tag
+  places{1..4}: # custom taxonomy
+    name (unique): <words(2, true)> # '(unique)' is required
+    description: <sentences(3, true)>
+    taxonomy: place
+    acf:
+      address: <streetAddress>
+      zip: <postcode>
+      city: <city>
+      image: '@custom_images*->ID'
 
+#
+# POSTS
+#
 Hellonico\Fixtures\Entity\Post:
-  post{1..30}:
-    post_title: '<sentence()>'
-    post_content: '<paragraphs(5, true)>'
-    post_excerpt: '<paragraphs(1, true)>'
-    post_date: '<dateTimeThisDecade()>'
+
+  # TEMPLATE
+  default (template):
+    post_title: <words(2, true)>
+    post_date: <dateTimeThisDecade()>
+    post_content: <paragraphs(5, true)>
+    post_excerpt: <paragraphs(1, true)>
+    meta:
+      _thumbnail_id: '@attachment*->ID'
+
+  # POSTS
+  post{1..30} (extends default):
     # 'meta' and 'meta_input' are basically the same, you can use one or both,
     # they will be merged, just don't provide the same keys in each definition
     meta:
-        _thumbnail_id: '@attachment*->ID'
+      _thumbnail_id: '@attachment*->ID'
     meta_input:
-        _extra_field: '<paragraphs(1, true)>'
+      _extra_field: <paragraphs(1, true)>
     post_category: '3x @category*->term_id' # post_category only accepts IDs
     tax_input:
       post_tag: '5x @tag*->term_id'
-      # post_tag: '5x <words(2, true)>' # Or tags can be dynamically created
-  page{1..10}:
-    post_type: 'page'
-    post_title: '<sentence()>'
-    post_content: '<paragraphs(5, true)>'
-    post_date: '<dateTimeThisDecade()>'
-  product{1..15}:
-    post_title: '<sentence()>'
-    post_type: 'product'
-    post_content: '<paragraphs(5, true)>'
-    post_date: '<dateTimeThisDecade()>'
+      # post_tag: '5x <words(2, true)> # Or tags can be dynamically created
 
+  # PAGES
+  page{contact, privacy}:
+    post_title: <current()>
+    post_type: page
+
+  # CUSTOM POST TYPE
+  product{1..15}:
+    post_type: product
+    acf:
+      price: <numberBetween(10, 200)>
+      features: # repeater field
+        - label: <words(2, true)>
+          value: <sentence()
+        - label: <words(2, true)>
+          value: <sentence()>
+        - label: <words(2, true)>
+          value: <sentence()>
+
+#
+# COMMENTS
+#
 Hellonico\Fixtures\Entity\Comment:
   comment{1..50}:
     comment_post_ID: '@post*->ID'
     user_id: '@user*->ID'
-    comment_date: '<dateTimeThisDecade()>'
-    comment_author: '<username()>'
-    comment_author_email: '<safeEmail()>'
-    comment_author_url: '<url()>'
-    comment_content: '<paragraphs(2, true)>'
-    comment_agent: '<userAgent()>'
-    comment_author_IP: '<ipv4()>'
+    comment_date: <dateTimeThisDecade()>
+    comment_author: <username()>
+    comment_author_email: <safeEmail()>
+    comment_author_url: <url()>
+    comment_content: <paragraphs(2, true)>
+    comment_agent: <userAgent()>
+    comment_author_IP: <ipv4()>
     comment_approved: 1
-    comment_karma: '<numberBetween(1, 100)>'
+    comment_karma: <numberBetween(1, 100)>
     # 'meta' and 'comment_meta' are basically the same, you can use one or both,
     # they will be merged, just don't provide the same keys in each definition
     comment_meta:
-        some_key: '<sentence()>'
+      some_key: <sentence()>
     meta:
-        another_key: '<sentence()>'
-
+      another_key: <sentence()>
 ```
 
 The example above will generate:
@@ -125,7 +172,7 @@ The example above will generate:
 
 **IMPORTANT:** Make sure referenced IDs are placed **BEFORE** they are used.
 
-Example: `Term` or `Attachment` objects **must** be placed before `Post` if you're references in your fixtures.
+Example: `Term` or `Attachment` objects **must** be placed before `Post` if you're referencing them in your fixtures.
 
 ### Load fixtures
 
@@ -183,27 +230,55 @@ Hellonico\Fixtures\Entity\Post:
 
 #### Post
 
-`Hellonico\Fixtures\Entity\Post` can take any parameters available in [`wp_insert_post`](https://developer.wordpress.org/reference/functions/wp_insert_post/#parameters) + `meta` key.
+`Hellonico\Fixtures\Entity\Post` can take any parameters available in [`wp_insert_post`](https://developer.wordpress.org/reference/functions/wp_insert_post/#parameters) + `meta` and `acf` key.
 
-`post_date_gmt` and `post_modified_gmt` have been disabled, there are set from `post_date` and `post_modified`.
+*Note: `post_date_gmt` and `post_modified_gmt` have been disabled, there are set from `post_date` and `post_modified`.*
 
 #### Attachment
 
-`Hellonico\Fixtures\Entity\Attachment` can take any parameters available in [`wp_insert_attachment`](https://developer.wordpress.org/reference/functions/wp_insert_attachment/#parameters) + `meta` and `file` custom keys. Note that `parent` must be passed with `post_parent` key.
+`Hellonico\Fixtures\Entity\Attachment` can take any parameters available in [`wp_insert_attachment`](https://developer.wordpress.org/reference/functions/wp_insert_attachment/#parameters) + `meta`, `file` and `acf` custom keys.
+
+*Note: `parent` must be passed with `post_parent` key.*
 
 #### Term
 
-`Hellonico\Fixtures\Entity\Term` can take any parameters available in [`wp_insert_term`](https://developer.wordpress.org/reference/functions/wp_insert_term/#parameters) + `meta` custom key. Note that `term` and `taxonomy` must be respectively passed with `name` and `taxonomy` key.
+`Hellonico\Fixtures\Entity\Term` can take any parameters available in [`wp_insert_term`](https://developer.wordpress.org/reference/functions/wp_insert_term/#parameters) + `meta` and `acf` custom keys.
+
+*Note: `term` and `taxonomy` must be respectively passed with `name` and `taxonomy` key.*
 
 #### User
 
-`Hellonico\Fixtures\Entity\User` can take any parameters available in [`wp_insert_user`](https://developer.wordpress.org/reference/functions/wp_insert_user/#parameters) + `meta` custom key.
+`Hellonico\Fixtures\Entity\User` can take any parameters available in [`wp_insert_user`](https://developer.wordpress.org/reference/functions/wp_insert_user/#parameters) + `meta` and `acf` custom keys.
 
 #### Comment
 
 `Hellonico\Fixtures\Entity\Comment` can take any parameters available in [`wp_insert_comment`](https://developer.wordpress.org/reference/functions/wp_insert_comment/#parameters) + `meta` custom key.
 
 `comment_date_gmt` has been disabled, it is set from `comment_date`.
+
+### ACF Support
+
+Each ACF supported entity (post, term, user) can have an `acf` key, which works just like `meta`.
+
+```yaml
+Hellonico\Fixtures\Entity\Post:
+  post{1..30}:
+    post_title: <words(3, true)>
+    post_date: <dateTimeThisDecade()>
+    acf:
+      # number field
+      number: <numberBetween(10, 200)>
+      # repeater field
+      features:
+        - label: <words(2, true)>
+          value: <sentence()
+        - label: <words(2, true)>
+          value: <sentence()>
+        - label: <words(2, true)>
+          value: <sentence()>
+```
+
+Be careful with duplicate field keys, if you have multiple field with the same key, prefer using ACF field key (`field_948d1qj5mn4d3`).
 
 ### Custom formatters
 
@@ -251,6 +326,28 @@ Example:
 
 ```
 <userId(role=subscriber)>
+```
+
+#### `fileContent($file)`
+
+Returns the content of a file.
+
+Example:
+
+```
+<fileContent('path/to/file.html')>
+```
+
+#### `fileIn($src, $target, false)`
+
+Wrapper around [file provider](https://github.com/fzaninotto/Faker#fakerproviderfile) because some Faker providers [conflicts with PHP native ](https://github.com/nelmio/alice/blob/master/doc/getting-started.md#symfony). Returns file path or file name in a directory (`$src` relative to `fixtures.yml`).
+
+Default target is the WordPress `uploads`.
+
+Example:
+
+```
+<fileIn('my/set/of/images')>
 ```
 
 #### Tips

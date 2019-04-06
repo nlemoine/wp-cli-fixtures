@@ -6,13 +6,13 @@ Feature: Term fixtures
     """
     Hellonico\Fixtures\Entity\Term:
       category{1..5}:
-        name (unique): '<words(3, true)>'
-        description: '<sentence()>'
-        parent: '50%? <termId(childless=1)>'
+        name (unique): <words(3, true)>
+        description: <sentence()>
+        parent: '50%? <termId(childless=1)>
       tag{1..5}:
-        name (unique): '<words(3, true)>'
-        description: '<sentence()>'
-        taxonomy: 'post_tag'
+        name (unique): <words(3, true)>
+        description: <sentence()>
+        taxonomy: post_tag
     """
 
     When I run `wp fixtures load`
@@ -45,14 +45,14 @@ Feature: Term fixtures
     """
     Hellonico\Fixtures\Entity\Term:
       category{1..5}:
-        name (unique): '<words(3, true)>'
-        description: '<sentence()>'
-        parent: '50%? <termId(childless=1)>'
+        name (unique): <words(3, true)>
+        description: <sentence()>
+        parent: '50%? <termId(childless=1)>
         taxonomy: 'category'
       tag{1..5}:
-        name (unique): '<words(3, true)>'
-        description: '<sentence()>'
-        taxonomy: 'post_tag'
+        name (unique): <words(3, true)>
+        description: <sentence()>
+        taxonomy: post_tag
     """
 
     When I run `wp fixtures load`

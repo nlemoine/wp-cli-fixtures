@@ -2,10 +2,6 @@
 
 namespace Hellonico\Fixtures\Entity;
 
-use DateTime;
-use ReflectionObject;
-use ReflectionProperty;
-
 abstract class Entity implements EntityInterface
 {
     /**
@@ -23,6 +19,11 @@ abstract class Entity implements EntityInterface
     public function __construct($id = false)
     {
         if ($id && absint($id) > 0) {
+            $post = get_post($id);
+            foreach ($post as $field => $value) {
+                $this->{$field} = $value;
+            }
+
             return $this->exists($id) ? $this->setCurrentId($id) : $this->setCurrentId(false);
         }
         $this->create();
@@ -37,13 +38,13 @@ abstract class Entity implements EntityInterface
     {
         // Convert DateTime objects to string
         foreach ($this as $key => $value) {
-            if ($value instanceof DateTime) {
+            if ($value instanceof \DateTime) {
                 $this->{$key} = $value->format('Y-m-d H:i:s');
             }
 
             if (is_array($value)) {
                 array_walk_recursive($value, function (&$v, $k) {
-                    if ($v instanceof DateTime) {
+                    if ($v instanceof \DateTime) {
                         $v = $v->format('Y-m-d H:i:s');
                     }
                 });
@@ -94,7 +95,7 @@ abstract class Entity implements EntityInterface
     protected function filterProperties()
     {
         // @todo check public entity properties
-        $public_properties = array_column((new ReflectionObject($this))->getProperties(ReflectionProperty::IS_PUBLIC), 'name');
+        $public_properties = array_column((new \ReflectionObject($this))->getProperties(\ReflectionProperty::IS_PUBLIC), 'name');
     }
 
     /**

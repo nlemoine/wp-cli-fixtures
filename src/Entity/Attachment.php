@@ -33,6 +33,8 @@ class Attachment extends Post
             if (is_file($this->file)) {
                 @unlink($this->file);
             }
+            WP_CLI::error(sprintf('An error occured while updating the attachment ID %s, it has been deleted.', $this->file), false);
+            wp_delete_attachment($this->ID, true);
 
             return false;
         }

@@ -4,11 +4,11 @@ namespace Hellonico\Fixtures;
 
 use Faker\Factory;
 use Hellonico\Fixtures\Provider\WordPress;
+use Nelmio\Alice\Faker\Provider\AliceProvider;
 use Nelmio\Alice\Loader\NativeLoader;
-use ReflectionClass;
 use WP_CLI;
-use WP_CLI_Command;
 use function WP_CLI\Utils\make_progress_bar;
+use WP_CLI_Command;
 
 class Command extends WP_CLI_Command
 {
@@ -22,7 +22,7 @@ class Command extends WP_CLI_Command
      *
      * ## EXAMPLES
      *
-     *     wp fixtures load --file=fixtures/data.yml
+     * wp fixtures load --file=fixtures/data.yml
      */
     public function load($args, $assoc_args)
     {
@@ -52,16 +52,21 @@ class Command extends WP_CLI_Command
 
         // Set locale
         $generator = Factory::create(get_locale());
+        $generator->addProvider(new AliceProvider());
         // Add provider
         $generator->addProvider(new WordPress($generator));
 
-        WP_CLI::line('Loading fixtures... This might take some time depending on images number and connection speed');
+        WP_CLI::log('Loading fixtures... This might take some time depending on images number and connection speed');
 
         // Load file
         $loader = new NativeLoader($generator);
 
-        $object_set = $loader->loadFile($file);
-        $objects    = $object_set->getObjects();
+        try {
+            $object_set = $loader->loadFile($file);
+            $objects    = $object_set->getObjects();
+        } catch (\Exception $e) {
+            WP_CLI::error($e->getMessage());
+        }
 
         if (empty($objects)) {
             WP_CLI::error('No fixtures has been found.');
@@ -101,8 +106,8 @@ class Command extends WP_CLI_Command
      *
      * ## EXAMPLES
      *
-     *     wp fixtures delete post
-     *     wp fixtures delete
+     * wp fixtures delete post
+     * wp fixtures delete
      */
     public function delete($args = [], array $assoc_args = [])
     {
@@ -139,7 +144,7 @@ class Command extends WP_CLI_Command
      */
     private function getContentType($object)
     {
-        $reflect = new ReflectionClass($object);
+        $reflect = new \ReflectionClass($object);
         $type    = strtolower($reflect->getShortName());
 
         if ('post' === $type) {

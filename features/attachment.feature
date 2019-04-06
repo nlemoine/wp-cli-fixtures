@@ -6,8 +6,8 @@ Feature: Attachment fixtures
     """
     Hellonico\Fixtures\Entity\Attachment:
       attachment{1..5}:
-        post_title: '<sentence()>'
-        post_date: '<dateTimeThisDecade()>'
+        post_title: <sentence()>
+        post_date: <dateTimeThisDecade()>
         file: <image(<uploadDir()>, 1200, 1200, 'cats')>
     """
 
@@ -29,8 +29,8 @@ Feature: Attachment fixtures
     """
     Hellonico\Fixtures\Entity\Attachment:
       attachment{1..5}:
-        post_title: '<sentence()>'
-        post_date: '<dateTimeThisDecade()>'
+        post_title: <sentence()>
+        post_date: <dateTimeThisDecade()>
         file: <image(<uploadDir()>, 1200, 1200, 'cats')>
     """
 

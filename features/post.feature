@@ -7,22 +7,22 @@ Feature: Post fixtures
     Hellonico\Fixtures\Entity\Post:
       hello_fixtures:
         post_title: 'Hello Fixtures !'
-        post_content: '<paragraphs(5, true)>'
-        post_excerpt: '<paragraphs(1, true)>'
-        post_date: '<dateTimeThisDecade()>'
+        post_content: <paragraphs(5, true)>
+        post_excerpt: <paragraphs(1, true)>
+        post_date: <dateTimeThisDecade()>
         meta_input:
-          _foo_custom_field: '<paragraphs(1, true)>'
+          _foo_custom_field: <paragraphs(1, true)>
         meta:
-          _bar_custom_field: '<sentence()>'
+          _bar_custom_field: <sentence()>
       post{1..4}:
-        post_title: '<sentence()>'
-        post_content: '<paragraphs(5, true)>'
-        post_excerpt: '<paragraphs(1, true)>'
-        post_date: '<dateTimeThisDecade()>'
+        post_title: <sentence()>
+        post_content: <paragraphs(5, true)>
+        post_excerpt: <paragraphs(1, true)>
+        post_date: <dateTimeThisDecade()>
         meta_input:
-          _foo_custom_field: '<paragraphs(1, true)>'
+          _foo_custom_field: <paragraphs(1, true)>
         meta:
-          _bar_custom_field: '<sentence()>'
+          _bar_custom_field: <sentence()>
     """
 
     When I run `wp fixtures load`
@@ -62,9 +62,9 @@ Feature: Post fixtures
   #   Hellonico\Fixtures\Entity\Post:
   #     hello_fixtures:
   #       __construct: [1]
-  #       post_title: '<sentence()>'
-  #       post_content: '<paragraphs(5, true)>'
-  #       post_excerpt: '<paragraphs(1, true)>'
+  #       post_title: <sentence()>
+  #       post_content: <paragraphs(5, true)>
+  #       post_excerpt: <paragraphs(1, true)>
   #   """
 
   Scenario: Generate custom post types
@@ -73,8 +73,8 @@ Feature: Post fixtures
     """
     Hellonico\Fixtures\Entity\Post:
       product{1..5}:
-        post_title: '<sentence()>'
-        post_content: '<paragraphs(5, true)>'
+        post_title: <sentence()>
+        post_content: <paragraphs(5, true)>
         post_type: 'product'
     """
 
@@ -96,8 +96,8 @@ Feature: Post fixtures
     """
     Hellonico\Fixtures\Entity\Post:
       post{1..5}:
-        post_title: '<sentence()>'
-        post_content: '<paragraphs(5, true)>'
+        post_title: <sentence()>
+        post_content: <paragraphs(5, true)>
     """
 
     When I run `wp fixtures load`

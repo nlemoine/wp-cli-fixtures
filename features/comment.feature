@@ -6,21 +6,21 @@ Feature: Comment fixtures
     """
     Hellonico\Fixtures\Entity\Comment:
       comment{1..5}:
-        comment_post_ID: '<postId()>'
-        user_id: '<userId()>'
-        comment_date: '<dateTimeThisDecade()>'
-        comment_author: '<username()>'
-        comment_author_email: '<safeEmail()>'
-        comment_author_url: '<url()>'
-        comment_content: '<paragraphs(2, true)>'
-        comment_agent: '<userAgent()>'
-        comment_author_IP: '<ipv4()>'
+        comment_post_ID: <postId()>
+        user_id: <userId()>
+        comment_date: <dateTimeThisDecade()>
+        comment_author: <username()>
+        comment_author_email: <safeEmail()>
+        comment_author_url: <url()>
+        comment_content: <paragraphs(2, true)>
+        comment_agent: <userAgent()>
+        comment_author_IP: <ipv4()>
         comment_approved: 1
-        comment_karma: '<numberBetween(1, 100)>'
+        comment_karma: <numberBetween(1, 100)>
         comment_meta:
-            foo_key: '<sentence()>'
+            foo_key: <sentence()>
         meta:
-            bar_key: '<sentence()>'
+            bar_key: <sentence()>
     """
 
     When I run `wp fixtures load`
@@ -53,13 +53,13 @@ Feature: Comment fixtures
     """
     Hellonico\Fixtures\Entity\Comment:
       comment{1..5}:
-        comment_post_ID: '<postId()>'
-        user_id: '<userId()>'
-        comment_author: '<username()>'
-        comment_author_email: '<safeEmail()>'
-        comment_content: '<paragraphs(2, true)>'
-        comment_agent: '<userAgent()>'
-        comment_author_IP: '<ipv4()>'
+        comment_post_ID: <postId()>
+        user_id: <userId()>
+        comment_author: <username()>
+        comment_author_email: <safeEmail()>
+        comment_content: <paragraphs(2, true)>
+        comment_agent: <userAgent()>
+        comment_author_IP: <ipv4()>
     """
 
     When I run `wp fixtures load`
