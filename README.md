@@ -49,8 +49,8 @@ Hellonico\Fixtures\Entity\User:
       zip: <postcode()>
       city: <city()>
     acf:
-      facebook_url: <url>
-      twitter_url: <url>
+      facebook_url: <url()>
+      twitter_url: <url()>
 
 #
 # ATTACHMENTS
@@ -86,8 +86,8 @@ Hellonico\Fixtures\Entity\Term:
     taxonomy: place
     acf:
       address: <streetAddress>
-      zip: <postcode>
-      city: <city>
+      zip: <postcode()>
+      city: <city()>
       image: '@custom_images*->ID'
 
 #
@@ -126,14 +126,34 @@ Hellonico\Fixtures\Entity\Post:
   product{1..15}:
     post_type: product
     acf:
+      # number field
       price: <numberBetween(10, 200)>
-      features: # repeater field
+      # gallery field
+      gallery: '3x @attachment*->ID'
+      # oembed field
+      video: https://www.youtube.com/watch?v=E90_aL870ao
+      # link field
+      link:
+        url: https://www.youtube.com/watch?v=E90_aL870ao
+        title: <words(2, true)>
+        target: _blank
+      # repeater field
+      features:
         - label: <words(2, true)>
           value: <sentence()
         - label: <words(2, true)>
           value: <sentence()>
         - label: <words(2, true)>
           value: <sentence()>
+      # layout field
+      blocks:
+        - acf_fc_layout: text_image
+          title: <words(4, true)>
+          content: <sentences(8, true)>
+          image: '@attachment*->ID'
+        - acf_fc_layout: image_image
+          image_left: '@attachment*->ID'
+          image_right: '@attachment*->ID'
 
 #
 # COMMENTS
@@ -157,6 +177,7 @@ Hellonico\Fixtures\Entity\Comment:
       some_key: <sentence()>
     meta:
       another_key: <sentence()>
+
 ```
 
 The example above will generate:
