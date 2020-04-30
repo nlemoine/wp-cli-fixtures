@@ -12,9 +12,12 @@
     }
   ],
   "require": {
-    "nelmio/alice": "^3.5"
+    "nelmio/alice": "~3.2.2",
+    "symfony/yaml": "^2.8"
   },
-  "require-dev": {},
+  "require-dev": {
+    "wp-cli/wp-cli-tests": "^2.1"
+  },
   "autoload": {
     "psr-4": {
       "Hellonico\\Fixtures\\": "src/"
@@ -38,5 +41,8 @@
       "@phpunit",
       "@behat"
     ]
+  },
+  "config": {
+    "process-timeout": 1800
   }
 }
