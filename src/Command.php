@@ -3,6 +3,7 @@
 namespace Hellonico\Fixtures;
 
 use Faker\Factory;
+use Hellonico\Fixtures\Provider\Picsum;
 use Hellonico\Fixtures\Provider\WordPress;
 use Nelmio\Alice\Faker\Provider\AliceProvider;
 use Nelmio\Alice\Loader\NativeLoader;
@@ -55,6 +56,7 @@ class Command extends WP_CLI_Command
         $generator->addProvider(new AliceProvider());
         // Add provider
         $generator->addProvider(new WordPress($generator));
+        $generator->addProvider(new Picsum($generator));
 
         WP_CLI::log('Loading fixtures... This might take some time depending on images number and connection speed');
 

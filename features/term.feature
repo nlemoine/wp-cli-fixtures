@@ -8,7 +8,7 @@ Feature: Term fixtures
       category{1..5}:
         name (unique): <words(3, true)>
         description: <sentence()>
-        parent: '50%? <termId(childless=1)>
+        parent: '50%? <termId(childless=1)>'
       tag{1..5}:
         name (unique): <words(3, true)>
         description: <sentence()>
@@ -47,7 +47,7 @@ Feature: Term fixtures
       category{1..5}:
         name (unique): <words(3, true)>
         description: <sentence()>
-        parent: '50%? <termId(childless=1)>
+        parent: '50%? <termId(childless=1)>'
         taxonomy: 'category'
       tag{1..5}:
         name (unique): <words(3, true)>

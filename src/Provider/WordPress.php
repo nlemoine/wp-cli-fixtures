@@ -48,6 +48,7 @@ class WordPress extends Base
     public function uploadDir()
     {
         $upload_dir = wp_upload_dir();
+
         if (isset($upload_dir['path']) && is_dir($upload_dir['path']) && is_writable($upload_dir['path'])) {
             return $upload_dir['path'];
         }
