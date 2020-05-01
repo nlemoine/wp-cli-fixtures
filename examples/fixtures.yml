@@ -30,7 +30,9 @@ Hellonico\Fixtures\Entity\Attachment:
     post_date: <dateTimeThisDecade()>
     post_content: <paragraphs(5, true)>
   images{1..15} (extends default):
-    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # <uploadDir()> is required
+    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # <uploadDir()> is required, image() is the default faker provider and gets images from lorempixel.
+  pics{1..15} (extends default):
+    file: <picsum(<uploadDir()>, 1200, 1200)> # Alternatively we provide a picsum() provider which uses picsum for images. It's quicker but doesn't support image categories.
   documents{1..2} (extends default):
     file: <fileIn('relative/path/to/pdfs')>
   custom_images{1..10} (extends default):

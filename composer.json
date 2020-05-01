@@ -16,7 +16,8 @@
     "symfony/yaml": "^2.8"
   },
   "require-dev": {
-    "wp-cli/wp-cli-tests": "^2.1"
+    "wp-cli/wp-cli-tests": "^2.1",
+    "wp-cli/wp-cli-bundle": "^2.4"
   },
   "autoload": {
     "psr-4": {
