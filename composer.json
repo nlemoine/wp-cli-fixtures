@@ -13,7 +13,8 @@
   ],
   "require": {
     "nelmio/alice": "~3.2.2",
-    "symfony/yaml": "^2.8"
+    "symfony/yaml": "^2.8",
+    "fzaninotto/faker": "^1.9"
   },
   "require-dev": {
     "wp-cli/wp-cli-tests": "^2.1",
@@ -38,7 +39,6 @@
     "prepare-tests": "install-package-tests",
     "test": [
       "@lint",
-      "@phpcs",
       "@phpunit",
       "@behat"
     ]

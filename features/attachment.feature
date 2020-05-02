@@ -8,7 +8,7 @@ Feature: Attachment fixtures
       attachment{1..5}:
         post_title: <sentence()>
         post_date: <dateTimeThisDecade()>
-        file: <picsum(<uploadDir()>, 1200, 1200)>
+        file: <picsum(<uploadDir()>, 200, 200)>
     """
 
     When I run `wp fixtures load`
@@ -31,7 +31,7 @@ Feature: Attachment fixtures
       attachment{1..5}:
         post_title: <sentence()>
         post_date: <dateTimeThisDecade()>
-        file: <picsum(<uploadDir()>, 1200, 1200)>
+        file: <picsum(<uploadDir()>, 200, 200)>
     """
 
     When I run `wp fixtures load`

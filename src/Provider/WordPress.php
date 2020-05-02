@@ -9,6 +9,17 @@ class WordPress extends Base
 {
 
     /**
+     * Get permalink
+     *
+     * @param int $id
+     * @return void
+     */
+    public function permalink($id)
+    {
+        return get_permalink($id);
+    }
+
+    /**
      * Get a file content
      *
      * @param  string $file
