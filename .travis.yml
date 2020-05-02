@@ -3,7 +3,6 @@ dist: trusty
 
 language: php
 php:
-  - 7.1
   - 7.2
   - 7.3
 
@@ -58,7 +57,4 @@ jobs:
       env: WP_VERSION=latest
     - stage: test
       php: 7.2
-      env: WP_VERSION=latest
-    - stage: test
-      php: 7.1
       env: WP_VERSION=latest
