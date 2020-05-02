@@ -14,7 +14,7 @@ notifications:
 
 branches:
   only:
-    - master
+    - travis-tests
 
 cache:
   directories:
