@@ -8,7 +8,7 @@ wp-cli-fixtures
 Inspired by [Faker](https://github.com/trendwerk/faker), this package provides an easy way to create massive and custom fake data for your WordPress installation.
 This package is based on [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker). Please refer to these packages docs for advanced usage.
 
-![wp-cli-fixtures demo](http://hellonico.s3-website-eu-west-1.amazonaws.com/dev/wp-cli-fixtures.gif)
+![wp-cli-fixtures demo](https://hellonico.s3.eu-west-1.amazonaws.com/dev/wp-cli-fixtures.gif)
 
 **WARNING:** This package is mostly intented to be used for development purposes. Use it at your own risk, don't run it on a production database or make sure to back it up first.
 
@@ -379,5 +379,5 @@ While playing with fixtures, the [database command](https://github.com/ernilamba
 
 This package follows PSR2 coding standards and is tested with Behat. Execute `composer run tests` to ensure your PR passes.
 
-> You will need to run `composer run prepare-tests` before your first run. 
+> You will need to run `composer run prepare-tests` before your first run.
 
