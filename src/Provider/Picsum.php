@@ -26,11 +26,9 @@ class Picsum extends Image
     ) {
         $format = strtolower($format);
         $url    = sprintf(
-            'https://i.picsum.photos/id/%d/%d/%d.%s',
+            'https://picsum.photos/%d/%d',
             $width,
-            $height,
-            Base::numberBetween(0, 1025),
-            in_array($format, ['webp', 'jpg']) ? $format : 'jpg'
+            $height
         );
 
         if (!empty($filters)) {
@@ -41,7 +39,18 @@ class Picsum extends Image
     }
 
     /**
-     * @inheritDoc
+     * We need to be able to follow redirects for picsum to work, therefore we provide a custom version of parent::image()
+     * which sets CURLOPT_FOLLOWLOCATION to true.
+     *
+     * @param null $dir
+     * @param int $width
+     * @param int $height
+     * @param array $filters
+     * @param string $format
+     * @param bool $fullPath
+     * @param bool $unused
+     *
+     * @return false|\RuntimeException|string
      */
     public static function picsum(
         $dir = null,
@@ -52,13 +61,44 @@ class Picsum extends Image
         $fullPath = true,
         $unused = true
     ) {
-        return parent::image(
-            $dir,
-            $width,
-            $height,
-            $filters,
-            $fullPath,
-            $format
-        );
+        $dir = is_null($dir) ? sys_get_temp_dir() : $dir; // GNU/Linux / OS X / Windows compatible
+        // Validate directory path
+        if (!is_dir($dir) || !is_writable($dir)) {
+            throw new \InvalidArgumentException(sprintf('Cannot write to directory "%s"', $dir));
+        }
+
+        // Generate a random filename. Use the server address so that a file
+        // generated at the same time on a different server won't have a collision.
+        $name = md5(uniqid(empty($_SERVER['SERVER_ADDR']) ? '' : $_SERVER['SERVER_ADDR'], true));
+        $filename = $name .'.jpg';
+        $filepath = $dir . DIRECTORY_SEPARATOR . $filename;
+
+        $url = static::imageUrl($width, $height, $filters, $format, false, false);
+
+        // save file
+        if (function_exists('curl_exec')) {
+            // use cURL
+            $fp = fopen($filepath, 'wb' );
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_FILE, $fp);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Required for picsum to follow redirect.
+            $success = curl_exec($ch) && curl_getinfo($ch, CURLINFO_HTTP_CODE) === 200;
+            fclose($fp);
+            curl_close($ch);
+
+            if (!$success) {
+                unlink($filepath);
+
+                // could not contact the distant URL or HTTP error - fail silently.
+                return false;
+            }
+        } elseif (ini_get('allow_url_fopen')) {
+            // use remote fopen() via copy()
+            $success = copy($url, $filepath);
+        } else {
+            return new \RuntimeException('The image formatter downloads an image from a remote HTTP server. Therefore, it requires that PHP can request remote hosts, either via cURL or fopen()');
+        }
+
+        return $fullPath ? $filepath : $filename;
     }
 }
