@@ -20,7 +20,7 @@ Quick links: [Install](#install) | [Usage](#usage) | [Contribute](#contribute)
 wp package install git@github.com:nlemoine/wp-cli-fixtures.git
 ```
 
-Requires PHP `^7.1`.
+Requires PHP `^7.3`.
 
 ## Usage
 
@@ -377,7 +377,6 @@ While playing with fixtures, the [database command](https://github.com/ernilamba
 
 ## Contribute
 
-This package follows PSR2 coding standards and is tested with Behat. Execute `composer run tests` to ensure your PR passes.
+This package follows PSR2 coding standards and is tested with Behat. Execute `composer run test` to ensure your PR passes.
 
 > You will need to run `composer run prepare-tests` before your first run.
-
