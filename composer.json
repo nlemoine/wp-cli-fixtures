@@ -12,13 +12,17 @@
     }
   ],
   "require": {
-    "nelmio/alice": "~3.2.2",
-    "symfony/yaml": "^2.8",
-    "fzaninotto/faker": "^1.9"
+    "php": "^7.3",
+    "fakerphp/faker": "^1.13",
+    "nelmio/alice": "^3.8",
+    "wp-cli/wp-cli": "^2.4"
   },
   "require-dev": {
-    "wp-cli/wp-cli-tests": "^2.1",
-    "wp-cli/wp-cli-bundle": "^2.4"
+    "wp-cli/wp-cli-tests": "^3.0",
+    "wp-cli/entity-command": "^2.0"
+  },
+  "config": {
+    "process-timeout": 1800
   },
   "autoload": {
     "psr-4": {
@@ -39,11 +43,9 @@
     "prepare-tests": "install-package-tests",
     "test": [
       "@lint",
+      "@phpcs",
       "@phpunit",
       "@behat"
     ]
-  },
-  "config": {
-    "process-timeout": 1800
   }
 }
