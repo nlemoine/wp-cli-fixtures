@@ -1,7 +1,7 @@
 wp-cli-fixtures
 =========================
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nlemoine/wp-cli-fixtures/Testing?style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/nlemoine/wp-cli-fixtures/Testing?style=flat-square)(https://github.com/nlemoine/wp-cli-fixtures/actions/workflows/testing.yml?query=branch%3Amaster+workflow%3ATesting)
 ![Packagist Downloads](https://img.shields.io/packagist/dt/hellonico/wp-cli-fixtures?style=flat-square)
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/hellonico/wp-cli-fixtures?style=flat-square)
 
