@@ -198,6 +198,6 @@ class Post extends Entity
         }
         $count = count($query->posts);
 
-        WP_CLI::success(sprintf('%s post%s have been successfully deleted', $count, $count > 0 ? 's' : ''));
+        WP_CLI::success(sprintf('%s post%s have been successfully deleted', $count, $count > 1 ? 's' : ''));
     }
 }

@@ -114,6 +114,6 @@ class Comment extends Entity
         }
         $count = count($query->comments);
 
-        WP_CLI::success(sprintf('%s comment%s have been successfully deleted', $count, $count > 0 ? 's' : ''));
+        WP_CLI::success(sprintf('%s comment%s have been successfully deleted', $count, $count > 1 ? 's' : ''));
     }
 }

@@ -136,6 +136,6 @@ class Attachment extends Post
         }
         $count = count($query->posts);
 
-        WP_CLI::success(sprintf('%s attachment%s have been successfully deleted', $count, $count > 0 ? 's' : ''));
+        WP_CLI::success(sprintf('%s attachment%s have been successfully deleted', $count, $count > 1 ? 's' : ''));
     }
 }

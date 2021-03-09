@@ -92,7 +92,7 @@ class Command extends WP_CLI_Command
         $progress->finish();
 
         foreach ($counts as $type => $count) {
-            WP_CLI::success(sprintf('%d %s%s have been successfully created', $count, $type, $count > 0 ? 's' : ''));
+            WP_CLI::success(sprintf('%d %s%s have been successfully created', $count, $type, $count > 1 ? 's' : ''));
         }
     }
 
@@ -113,7 +113,7 @@ class Command extends WP_CLI_Command
      */
     public function delete($args = [], array $assoc_args = [])
     {
-        $valid_types = ['post', 'attachment', 'term', 'comment', 'user'];
+        $valid_types = ['post', 'attachment', 'nav_menu_item', 'term', 'nav_menu', 'comment', 'user'];
 
         // Delete only a fixture type
         if (isset($args[0]) && !empty($args[0])) {

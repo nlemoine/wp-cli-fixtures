@@ -69,8 +69,8 @@ class Picsum extends Image
 
         // Generate a random filename. Use the server address so that a file
         // generated at the same time on a different server won't have a collision.
-        $name = md5(uniqid(empty($_SERVER['SERVER_ADDR']) ? '' : $_SERVER['SERVER_ADDR'], true));
-        $filename = $name .'.jpg';
+        $name     = md5(uniqid(empty($_SERVER['SERVER_ADDR']) ? '' : $_SERVER['SERVER_ADDR'], true));
+        $filename = $name . '.jpg';
         $filepath = $dir . DIRECTORY_SEPARATOR . $filename;
 
         $url = static::imageUrl($width, $height, $filters, $format, false, false);
@@ -78,7 +78,7 @@ class Picsum extends Image
         // save file
         if (function_exists('curl_exec')) {
             // use cURL
-            $fp = fopen($filepath, 'wb' );
+            $fp = fopen($filepath, 'wb');
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_FILE, $fp);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Required for picsum to follow redirect.

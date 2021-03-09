@@ -143,6 +143,6 @@ class Term extends Entity
         }
         $count = count($query->terms);
 
-        WP_CLI::success(sprintf('%s term%s have been successfully deleted', $count, $count > 0 ? 's' : ''));
+        WP_CLI::success(sprintf('%s term%s have been successfully deleted', $count, $count > 1 ? 's' : ''));
     }
 }

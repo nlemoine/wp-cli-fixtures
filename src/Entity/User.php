@@ -140,6 +140,6 @@ class User extends Entity
         }
         $count = count($query->results);
 
-        WP_CLI::success(sprintf('%s user%s have been successfully deleted', $count, $count > 0 ? 's' : ''));
+        WP_CLI::success(sprintf('%s user%s have been successfully deleted', $count, $count > 1 ? 's' : ''));
     }
 }
