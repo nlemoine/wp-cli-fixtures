@@ -61,7 +61,9 @@ Hellonico\Fixtures\Entity\Attachment:
     post_date: <dateTimeThisDecade()>
     post_content: <paragraphs(5, true)>
   images{1..15} (extends default):
-    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # <uploadDir()> is required
+    file: <image(<uploadDir()>, 1200, 1200, 'cats')> # <uploadDir()> is required, image() is the default faker provider and gets images from lorempixel.
+  pics{1..15} (extends default):
+    file: <picsum(<uploadDir()>, 1200, 1200)> # Alternatively we provide a picsum() provider which uses picsum for images. It's quicker but doesn't support image categories.
   documents{1..2} (extends default):
     file: <fileIn('relative/path/to/pdfs')>
   custom_images{1..10} (extends default):
@@ -178,6 +180,33 @@ Hellonico\Fixtures\Entity\Comment:
     meta:
       another_key: <sentence()>
 
+#
+#  NAV MENUS
+#
+Hellonico\Fixtures\Entity\NavMenu:
+  header:
+    name: header
+    locations:
+      - header
+      - footer
+
+#
+#  NAV MENUS ITEMS
+#
+Hellonico\Fixtures\Entity\NavMenuItem:
+  custom_menu:
+    menu_item_url: <url()>
+    menu_item_title: <words(4, true)>
+    menu_id: '@header->term_id'
+  categories{1..3}:
+    menu_item_object: '@category*'
+    menu_id: '@header->term_id'
+  posts{1..3}:
+    menu_item_object: '@post*'
+    menu_id: '@header->term_id'
+  page:
+    menu_item_object: '@page*'
+    menu_id: '@header->term_id'
 ```
 
 The example above will generate:
@@ -190,6 +219,8 @@ The example above will generate:
 - 10 pages
 - 15 custom post types named 'product'
 - 50 comments associated with post and user
+- 1 nav menu
+- 6 nav menu items
 
 **IMPORTANT:** Make sure referenced IDs are placed **BEFORE** they are used.
 
@@ -276,6 +307,27 @@ Hellonico\Fixtures\Entity\Post:
 `Hellonico\Fixtures\Entity\Comment` can take any parameters available in [`wp_insert_comment`](https://developer.wordpress.org/reference/functions/wp_insert_comment/#parameters) + `meta` custom key.
 
 `comment_date_gmt` has been disabled, it is set from `comment_date`.
+
+#### Nav menu
+
+`Hellonico\Fixtures\Entity\NavMenu` is a term just like `Hellonico\Fixtures\Entity\Term`. It takes an addiotional `locations` parameter to set the menu location.
+
+```yaml
+Hellonico\Fixtures\Entity\NavMenu:
+  header:
+    name: header
+    locations:
+      - header
+```
+
+#### Nav menu item
+
+`Hellonico\Fixtures\Entity\NavMenuItem` takes the same parameters as `$menu_item_data` in [`wp_update_nav_menu_item`](https://developer.wordpress.org/reference/functions/wp_update_nav_menu_item/#parameters)
+
+*Note 1: replace dashes with underscore in keys (e.g. `menu-item-object` becomes `menu_item_object`).*
+
+*Note 2: `menu-item-object` can also accept an entity object, if so, `menu-item-type` and `menu-item-object-id` will be filled automatically with appropriate values*
+
 
 ### ACF Support
 
