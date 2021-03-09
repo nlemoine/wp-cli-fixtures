@@ -24,13 +24,9 @@ jobs:
     services:
       mysql:
         image: mysql:5.7
-        env:
-          MYSQL_DATABASE: wp_cli_test
-          MYSQL_USER: root
-          MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=wp_cli_test --entrypoint sh mysql:5.7 -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
 
     steps:
       - name: Check out source code
@@ -50,12 +46,6 @@ jobs:
       - name: Start MySQL server
         run: sudo service mysql start
 
-      - name: Verify MariaDB connection
-        run: |
-          while ! mysqladmin ping -h"127.0.0.1" -P"${{ job.services.mysql.ports[3306] }}" --silent; do
-            sleep 1
-          done
-
       - name: Get Composer cache Directory
         id: composer-cache
         run: |
@@ -72,13 +62,21 @@ jobs:
       - name: Install dependencies
         run: composer update --prefer-stable --prefer-dist --no-progress --no-interaction
 
-      - name: Prepare test database
+      - name: Configure DB environment
         run: |
-          export MYQSL_HOST=127.0.0.1
+          export MYSQL_HOST=127.0.0.1
           export MYSQL_TCP_PORT=${{ job.services.mysql.ports['3306'] }}
-          mysql -e 'CREATE DATABASE IF NOT EXISTS wp_cli_test;' -uroot -proot
-          mysql -e 'GRANT ALL PRIVILEGES ON wp_cli_test.* TO "wp_cli_test"@"127.0.0.1" IDENTIFIED BY "password1"' -uroot -proot
-          mysql -e 'GRANT ALL PRIVILEGES ON wp_cli_test_scaffold.* TO "wp_cli_test"@"127.0.0.1" IDENTIFIED BY "password1"' -uroot -proot
+          echo "WP_CLI_TEST_DBROOTUSER=root" >> $GITHUB_ENV
+          echo "WP_CLI_TEST_DBROOTPASS=root" >> $GITHUB_ENV
+          echo "WP_CLI_TEST_DBUSER=wp_cli_test" >> $GITHUB_ENV
+          echo "WP_CLI_TEST_DBPASS=password1" >> $GITHUB_ENV
+          echo "WP_CLI_TEST_DBHOST=$MYSQL_HOST:$MYSQL_TCP_PORT" >> $GITHUB_ENV
+
+      - name: Prepare test database
+        run: composer prepare-tests
+
+      - name: Check Behat environment
+        run: WP_CLI_TEST_DEBUG_BEHAT_ENV=1 composer behat
 
       - name: Run Behat
         env:
