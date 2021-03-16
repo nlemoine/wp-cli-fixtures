@@ -98,13 +98,7 @@ class Attachment extends Post
         // Assign metadata to attachment
         wp_update_attachment_metadata($attachment_id, $attachment_data);
 
-        // Save meta
-        $meta = $this->getMetaData();
-        foreach ($meta as $meta_key => $meta_value) {
-            update_post_meta($this->ID, $meta_key, $meta_value);
-        }
-
-        return true;
+        return parent::persist();
     }
 
     /**
