@@ -1,9 +1,6 @@
 name: Testing
 
-on:
-  push:
-    branches:
-      - '*'
+on: [push, pull_request]
 
 jobs:
   functional:
