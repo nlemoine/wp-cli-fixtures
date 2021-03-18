@@ -167,11 +167,10 @@ class Post extends Entity
             return false;
         }
 
-        // Remove attachment from types to delete
-        $attachment_index = array_search('attachment', $types);
-        if (false !== $attachment_index) {
-            unset($types[$attachment_index]);
-        }
+        // Filter out posts that have their own delete handlers.
+        $types = array_filter( $types, function($type) {
+            return !in_array($type, ['attachment', 'nan_menu_item']);
+        });
 
         $query = new WP_Query([
             'fields'     => 'ids',
