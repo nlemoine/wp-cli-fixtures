@@ -98,4 +98,36 @@ class NavMenuItem extends Post
 
         return $data;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function delete()
+    {
+        $query = new WP_Query([
+            'fields'     => 'ids',
+            'meta_query' => [
+                [
+                    'key'   => '_fake',
+                    'value' => true,
+                ],
+            ],
+            'post_status'    => 'any',
+            'post_type'      => 'nav_menu_item',
+            'posts_per_page' => -1,
+        ]);
+
+        if (empty($query->posts)) {
+            WP_CLI::line(WP_CLI::colorize('%BInfo:%n No fake navmenuitems to delete'));
+
+            return false;
+        }
+
+        foreach ($query->posts as $id) {
+            wp_delete_post($id, true);
+        }
+        $count = count($query->posts);
+
+        WP_CLI::success(sprintf('%s navmenuitem%s have been successfully deleted', $count, $count > 1 ? 's' : ''));
+    }
 }

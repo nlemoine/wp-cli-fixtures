@@ -139,6 +139,10 @@ class Term extends Entity
             if (!isset($term->taxonomy)) {
                 continue;
             }
+            // Nav Menu's are handled within NavMenu.
+            if ($term->taxonomy === 'nav_menu') {
+                continue;
+            }
             wp_delete_term($id, $term->taxonomy);
         }
         $count = count($query->terms);
