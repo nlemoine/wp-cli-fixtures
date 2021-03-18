@@ -24,7 +24,7 @@ Feature: Nav menus fixtures
       1
       """
 
-  Scenario: Delete terms
+  Scenario: Delete nav menus
     Given a WP install
     And a fixtures.yml file:
     """
@@ -37,8 +37,8 @@ Feature: Nav menus fixtures
     """
 
     When I run `wp fixtures load`
-    When I run `wp fixtures delete term --yes`
+    When I run `wp fixtures delete navMenu --yes`
     Then STDOUT should contain:
       """
-      1 term have been successfully deleted
+      1 navmenu have been successfully deleted
       """

@@ -113,7 +113,7 @@ class Command extends WP_CLI_Command
      */
     public function delete($args = [], array $assoc_args = [])
     {
-        $valid_types = ['post', 'attachment', 'nav_menu_item', 'term', 'nav_menu', 'comment', 'user'];
+        $valid_types = ['post', 'attachment', 'navMenuItem', 'term', 'navMenu', 'comment', 'user'];
 
         // Delete only a fixture type
         if (isset($args[0]) && !empty($args[0])) {
