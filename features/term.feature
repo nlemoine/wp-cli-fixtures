@@ -10,6 +10,7 @@ Feature: Term fixtures
         description: <sentence()>
         parent: '50%? <termId(childless=1)>'
       tag{1..5}:
+        __construct: ['post_tag']
         name (unique): <words(3, true)>
         description: <sentence()>
         taxonomy: post_tag
