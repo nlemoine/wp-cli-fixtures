@@ -16,6 +16,21 @@ class Term extends Entity
     public $acf;
 
     /**
+     * Constructor.
+     *
+     * @param int $id
+     * @param string $taxonomy
+     */
+    public function __construct($taxonomy = null)
+    {
+        if ($taxonomy === null) {
+            $taxonomy = $this->taxonomy;
+        }
+        $this->taxonomy = $taxonomy;
+        parent::__construct(false);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function create()

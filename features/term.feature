@@ -10,6 +10,7 @@ Feature: Term fixtures
         description: <sentence()>
         parent: '50%? <termId(childless=1)>'
       tag{1..5}:
+        __construct: ['post_tag']
         name (unique): <words(3, true)>
         description: <sentence()>
         taxonomy: post_tag
@@ -37,6 +38,13 @@ Feature: Term fixtures
     Then STDOUT should be:
       """
       5
+      """
+
+    When I run `wp db query "SELECT COUNT(1) AS parent_tags FROM wp_term_taxonomy WHERE term_id IN ( SELECT parent FROM wp_term_taxonomy WHERE parent != 0 ) AND taxonomy = 'post_tag'"`
+    Then STDOUT should be:
+      """
+      parent_tags
+      0
       """
 
   Scenario: Delete terms
