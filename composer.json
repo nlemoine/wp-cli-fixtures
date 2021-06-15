@@ -19,7 +19,8 @@
   },
   "require-dev": {
     "wp-cli/wp-cli-tests": "^3.0.9",
-    "wp-cli/entity-command": "^2.0"
+    "wp-cli/entity-command": "^2.0",
+    "wp-cli/db-command": "^2.0"
   },
   "config": {
     "process-timeout": 1800

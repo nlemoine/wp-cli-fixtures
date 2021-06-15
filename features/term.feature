@@ -39,6 +39,13 @@ Feature: Term fixtures
       5
       """
 
+    When I run `wp db query "SELECT COUNT(1) AS parent_tags FROM wp_term_taxonomy WHERE term_id IN ( SELECT parent FROM wp_term_taxonomy WHERE parent != 0 ) AND taxonomy = 'post_tag'"`
+    Then STDOUT should be:
+      """
+      parent_tags
+      0
+      """
+
   Scenario: Delete terms
     Given a WP install
     And a fixtures.yml file:
