@@ -48,6 +48,7 @@ Hellonico\Fixtures\Entity\Term:
     parent: '50%? <termId(childless=1)>' # 50% of created categories will have a top level parent category
     taxonomy: 'category' # could be skipped, default to 'category'
   tag{1..40}:
+    __construct: ['post_tag'] # This is required to ensure the dynamic parent field above doesn't use tags as possible parents
     name (unique): <words(2, true)> # '(unique)' is required
     description: <sentence()>
     taxonomy: post_tag
