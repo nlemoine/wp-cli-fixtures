@@ -8,11 +8,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.3', '7.4']
+        php: ['7.3', '7.4', '8.0', '8.1']
         wp: ['latest']
         test: ["composer behat || composer behat-rerun"]
         include:
-          - php: '7.4'
+          - php: '8.0'
             wp: 'trunk'
             test: "composer behat || composer behat-rerun"
 

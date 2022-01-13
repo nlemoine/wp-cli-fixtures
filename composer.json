@@ -12,7 +12,7 @@
     }
   ],
   "require": {
-    "php": "^7.3 || ^8.0",
+    "php": "^7.3 || ~8.0.14",
     "fakerphp/faker": "^1.13",
     "nelmio/alice": "^3.8",
     "wp-cli/wp-cli": "^2.4"
@@ -23,7 +23,10 @@
     "wp-cli/db-command": "^2.0"
   },
   "config": {
-    "process-timeout": 1800
+    "process-timeout": 1800,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   },
   "autoload": {
     "psr-4": {
