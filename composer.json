@@ -1,29 +1,29 @@
 {
   "name": "hellonico/wp-cli-fixtures",
-  "type": "wp-cli-package",
   "description": "Easily generate fake data for WordPress",
-  "homepage": "https://github.com/nlemoine/wp-cli-fixtures",
   "license": "GPL-3.0+",
+  "type": "wp-cli-package",
   "authors": [
     {
       "name": "Nicolas Lemoine",
-      "email": "dev@helloni.co",
+      "email": "dev@niconico.fr",
       "homepage": "https://github.com/nlemoine"
     }
   ],
+  "homepage": "https://github.com/nlemoine/wp-cli-fixtures",
   "require": {
-    "php": "^7.3",
+    "php": "^7.3 || ^8.0",
     "fakerphp/faker": "^1.13",
     "nelmio/alice": "^3.8",
     "wp-cli/wp-cli": "^2.4"
   },
   "require-dev": {
-    "wp-cli/wp-cli-tests": "^3.0.9",
-    "wp-cli/entity-command": "^2.0"
+    "wp-cli/db-command": "^2.0",
+    "wp-cli/entity-command": "^2.0",
+    "wp-cli/wp-cli-tests": "^3.1"
   },
-  "config": {
-    "process-timeout": 1800
-  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "autoload": {
     "psr-4": {
       "Hellonico\\Fixtures\\": "src/"
@@ -32,8 +32,12 @@
       "command.php"
     ]
   },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "process-timeout": 1800
+  },
   "scripts": {
     "behat": "run-behat-tests",
     "behat-rerun": "rerun-behat-tests",

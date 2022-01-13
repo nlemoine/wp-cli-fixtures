@@ -32,7 +32,7 @@ class Picsum extends Image
         );
 
         if (!empty($filters)) {
-            $url .= '?' . http_build_query($filters);
+            $url .= '?' . http_build_query((array) $filters);
         }
 
         return $url;
