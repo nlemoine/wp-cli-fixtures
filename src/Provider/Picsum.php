@@ -22,7 +22,8 @@ class Picsum extends Image
         $filters = [],
         $format = 'jpg',
         $unused = false,
-        $unused_ = false
+        $unused_ = false,
+        $unused3 = false,
     ) {
         $format = strtolower($format);
         $url    = sprintf(
