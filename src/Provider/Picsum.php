@@ -23,7 +23,7 @@ class Picsum extends Image
         $format = 'jpg',
         $unused = false,
         $unused_ = false,
-        $unused3 = false,
+        $unused3 = false
     ) {
         $format = strtolower($format);
         $url    = sprintf(
