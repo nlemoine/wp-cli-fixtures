@@ -92,6 +92,31 @@ class WordPress extends Base
         return absint(self::randomElement($posts));
     }
 
+
+    /**
+     * Get random post IDs.
+     *
+     * @param array|string $args
+     *
+     * @return array<int>
+     */
+    public function postIds($args = [])
+    {
+        $query_args = array_merge(wp_parse_args($args), [
+            'fields'                 => 'ids',
+            'no_found_rows'          => true,
+            'update_post_meta_cache' => false,
+            'update_post_term_cache' => false,
+        ]);
+
+        $posts = get_posts($query_args);
+        if (empty($posts)) {
+            return [];
+        }
+
+        return $posts;
+    }
+
     /**
      * Get a random attachment ID.
      *
