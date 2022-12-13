@@ -142,7 +142,7 @@ Hellonico\Fixtures\Entity\Post:
       # repeater field
       features:
         - label: <words(2, true)>
-          value: <sentence()
+          value: <sentence()>
         - label: <words(2, true)>
           value: <sentence()>
         - label: <words(2, true)>
