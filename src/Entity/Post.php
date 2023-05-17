@@ -30,6 +30,7 @@ class Post extends Entity {
 	public $post_category;
 	public $meta_input;
 	public $acf;
+    public $mb_relations;
 	private $extra = [ 'meta_input', 'acf' ];
 
 	/**
@@ -115,6 +116,7 @@ class Post extends Entity {
 			update_post_meta( $this->ID, $meta_key, $meta_value );
 		}
 
+<<<<<<< HEAD
 		// Save ACF fields
 		if ( class_exists( 'acf' ) && ! empty( $this->acf ) && is_array( $this->acf ) ) {
 			foreach ( $this->acf as $name => $value ) {
@@ -125,6 +127,18 @@ class Post extends Entity {
 				update_field( $field['key'], $value, $post_id );
 			}
 		}
+=======
+        if( defined( 'RWMB_VER' ) && class_exists( 'MB_Relationships_API' ) && !empty( $this->mb_relations ) && is_array( $this->mb_relations )){
+			foreach ( $this->mb_relations as $mb_rel_id => $object_ids ){
+				foreach ( $object_ids as $id ){
+					\MB_Relationships_API::add( $post_id, $id, $mb_rel_id );
+				}
+			}
+        }
+
+        return true;
+    }
+>>>>>>> 10d8c92 (feat(MetaBoxRelationships): add support to set MetaBox Relationships through fixtures.yml file)
 
 		return true;
 	}
