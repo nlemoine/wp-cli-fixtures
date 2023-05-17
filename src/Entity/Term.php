@@ -14,6 +14,7 @@ class Term extends Entity {
 	public $description;
 	public $parent;
 	public $acf;
+	public $mb_relations;
 
 	/**
 	 * Constructor.

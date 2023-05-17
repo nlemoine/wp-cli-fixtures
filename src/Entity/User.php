@@ -29,6 +29,7 @@ class User extends Entity {
 	public $use_ssl;
 	public $show_admin_bar_front;
 	public $acf;
+	public $mb_relations;
 
 	/**
 	 * {@inheritdoc}
