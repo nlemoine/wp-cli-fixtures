@@ -344,14 +344,53 @@ Hellonico\Fixtures\Entity\Post:
       # repeater field
       features:
         - label: <words(2, true)>
-          value: <sentence()
+          value: <sentence()>
         - label: <words(2, true)>
           value: <sentence()>
         - label: <words(2, true)>
           value: <sentence()>
 ```
-
 Be careful with duplicate field keys, if you have multiple field with the same key, prefer using ACF field key (`field_948d1qj5mn4d3`).
+
+### MetaBox Support
+
+#### MetaBox Custom Fields
+MetaBox fields can be adressed using the `meta` key
+```yaml
+Hellonico\Fixtures\Entity\Post:
+  post{1..30}:
+    post_title: <words(3, true)>
+    post_date: <dateTimeThisDecade()>
+    meta:
+      # number field
+      number: <numberBetween(10, 200)>
+      custom_field: <sentence()>
+```
+
+#### MetaBox Relationships (https://docs.metabox.io/extensions/mb-relationships/#using-code)
+When using the MB Relationships extension, the relationships can be set/defined using the key `mb_relations`. For each relationship you want to create a fixture for, you use the relationship-ID which is used to register the MB-relation 
+```php
+ MB_Relationships_API::register( [
+        'id'   => 'post_to_term',
+        'from'   => 'post',
+        'to' => [
+            'object_type' => 'term',
+            'taxonomy'=> 'custom_term'
+        ],
+        
+    ] );
+```
+and the post/term ID of the object you want it to have a relationship with.
+```yaml
+Hellonico\Fixtures\Entity\Post:
+  post{1..30}:
+    post_title: <words(3, true)>
+    post_date: <dateTimeThisDecade()>
+    mb_relations:
+      post_to_term: '1x @custom_term*->term_id'
+      post_to_post: '1x @custom_post*->ID'
+```
+
 
 ### Custom formatters
 
