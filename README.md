@@ -364,7 +364,7 @@ Hellonico\Fixtures\Entity\Post:
     meta:
       # number field
       number: <numberBetween(10, 200)>
-      custom_field: <sentence()>
+      meta_box_custom_field: <sentence()>
 ```
 
 #### MetaBox Relationships (https://docs.metabox.io/extensions/mb-relationships/#using-code)
