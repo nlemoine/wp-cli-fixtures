@@ -99,17 +99,14 @@ class Term extends Entity {
 			}
 		}
 
-        // Save MetaBox Relationships
-        if( defined( 'RWMB_VER' ) && class_exists( 'MB_Relationships_API' ) && !empty( $this->mb_relations ) && is_array( $this->mb_relations )){
-			foreach ( $this->mb_relations as $mb_rel_id => $object_ids ){
-				foreach ( $object_ids as $id ){
+		// Save MetaBox Relationships
+		if ( defined( 'RWMB_VER' ) && class_exists( 'MB_Relationships_API' ) && ! empty( $this->mb_relations ) && is_array( $this->mb_relations ) ) {
+			foreach ( $this->mb_relations as $mb_rel_id => $object_ids ) {
+				foreach ( $object_ids as $id ) {
 					\MB_Relationships_API::add( $post_id, $id, $mb_rel_id );
 				}
 			}
-        }
-
-        return true;
-    }
+		}
 
 		return true;
 	}
