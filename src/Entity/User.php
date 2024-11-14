@@ -63,7 +63,7 @@ class User extends Entity {
 		$user_id = wp_update_user( $this->getData() );
 		if ( is_wp_error( $user_id ) ) {
 			wp_delete_user( $this->ID );
-			WP_CLI::error( html_entity_decode( $user_id->get_error_message() ), false );
+			WP_CLI::error( $user_id->get_error_message(), false );
 			WP_CLI::error( sprintf( 'An error occured while updating the user ID %d, it has been deleted.', $this->ID ), false );
 			$this->setCurrentId( false );
 

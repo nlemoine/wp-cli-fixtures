@@ -22,7 +22,7 @@ class Term extends Entity {
 	 * @param string $taxonomy
 	 */
 	public function __construct( $taxonomy = null ) {
-		if ( $taxonomy === null ) {
+		if ( null === $taxonomy ) {
 			$taxonomy = $this->taxonomy;
 		}
 		$this->taxonomy = $taxonomy;
@@ -35,7 +35,7 @@ class Term extends Entity {
 	public function create() {
 		$term = wp_insert_term( sprintf( 'term-%s', uniqid() ), $this->taxonomy );
 		if ( is_wp_error( $term ) ) {
-			WP_CLI::error( html_entity_decode( $term->get_error_message() ), false );
+			WP_CLI::error( $term->get_error_message(), false );
 			$this->setCurrentId( false );
 
 			return $term;
@@ -77,7 +77,7 @@ class Term extends Entity {
 
 		if ( is_wp_error( $term_id ) ) {
 			wp_delete_term( $this->term_id, $this->taxonomy );
-			WP_CLI::error( html_entity_decode( $term_id->get_error_message() ), false );
+			WP_CLI::error( $term_id->get_error_message(), false );
 			WP_CLI::error( sprintf( 'An error occured while updating the term ID %d, it has been deleted.', $this->term_id ), false );
 			$this->setCurrentId( false );
 
@@ -156,7 +156,7 @@ class Term extends Entity {
 				continue;
 			}
 			// Nav Menu's are handled within NavMenu.
-			if ( $term->taxonomy === 'nav_menu' ) {
+			if ( 'nav_menu' === $term->taxonomy ) {
 				continue;
 			}
 			wp_delete_term( $id, $term->taxonomy );

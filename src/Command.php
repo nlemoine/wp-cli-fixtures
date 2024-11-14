@@ -138,16 +138,16 @@ class Command extends WP_CLI_Command {
 	/**
 	 * Get content type.
 	 *
-	 * @param object $object
+	 * @param object $obj
 	 *
 	 * @return string
 	 */
-	private function getContentType( $object ) {
-		$reflect = new \ReflectionClass( $object );
+	private function getContentType( $obj ) {
+		$reflect = new \ReflectionClass( $obj );
 		$type    = strtolower( $reflect->getShortName() );
 
 		if ( 'post' === $type ) {
-			$type = $object->post_type;
+			$type = $obj->post_type;
 		}
 
 		return $type;

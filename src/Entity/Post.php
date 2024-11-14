@@ -69,7 +69,7 @@ class Post extends Entity {
 		// Handle errors
 		if ( is_wp_error( $post_id ) ) {
 			wp_delete_post( $this->ID, true );
-			WP_CLI::error( html_entity_decode( $post_id->get_error_message() ), false );
+			WP_CLI::error( $post_id->get_error_message(), false );
 			WP_CLI::error( sprintf( 'An error occured while updating the post ID %d, it has been deleted.', $this->ID ), false );
 			$this->setCurrentId( false );
 
@@ -99,6 +99,7 @@ class Post extends Entity {
 				// Add terms
 				$tt_ids = wp_set_object_terms( $post_id, $terms, $taxonomy );
 
+                // phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 				// Add fake flag to created terms
 				// foreach ($terms as $term) {
 				//     if (($term_obj = get_term_by('name', $term, $taxonomy)) !== false) {
@@ -175,7 +176,7 @@ class Post extends Entity {
 		$types = array_filter(
 			$types,
 			function ( $type ) {
-				return ! in_array( $type, [ 'attachment', 'nan_menu_item' ] );
+				return ! in_array( $type, [ 'attachment', 'nan_menu_item' ], true );
 			}
 		);
 

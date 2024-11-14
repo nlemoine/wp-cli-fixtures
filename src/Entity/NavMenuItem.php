@@ -50,7 +50,7 @@ class NavMenuItem extends Post {
 		// Handle errors
 		if ( is_wp_error( $post_id ) ) {
 			wp_delete_post( $this->ID, true );
-			WP_CLI::error( html_entity_decode( $post_id->get_error_message() ), false );
+			WP_CLI::error( $post_id->get_error_message(), false );
 			WP_CLI::error( sprintf( 'An error occured while updating the post ID %d, it has been deleted.', $this->ID ), false );
 			$this->setCurrentId( false );
 
@@ -70,7 +70,7 @@ class NavMenuItem extends Post {
 			}
 
 			// Get properties for objects
-			if ( $key === 'menu_item_object' && $item instanceof Entity ) {
+			if ( 'menu_item_object' === $key && $item instanceof Entity ) {
 				if ( $item instanceof Post ) {
 					$data['menu-item-type']      = 'post_type';
 					$data['menu-item-object']    = $item->post_type;

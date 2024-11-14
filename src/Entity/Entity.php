@@ -2,6 +2,9 @@
 
 namespace Hellonico\Fixtures\Entity;
 
+use AllowDynamicProperties;
+
+#[AllowDynamicProperties]
 abstract class Entity implements EntityInterface {
 
 	/**
@@ -23,7 +26,8 @@ abstract class Entity implements EntityInterface {
 				$this->{$field} = $value;
 			}
 
-			return $this->exists( $id ) ? $this->setCurrentId( $id ) : $this->setCurrentId( false );
+			$this->exists( $id ) ? $this->setCurrentId( $id ) : $this->setCurrentId( false );
+			return;
 		}
 		$this->create();
 	}
@@ -43,7 +47,7 @@ abstract class Entity implements EntityInterface {
 			if ( is_array( $value ) ) {
 				array_walk_recursive(
 					$value,
-					function ( &$v, $k ) {
+					function ( &$v ) {
 						if ( $v instanceof \DateTime ) {
 							$v = $v->format( 'Y-m-d H:i:s' );
 						}
@@ -100,13 +104,13 @@ abstract class Entity implements EntityInterface {
 	/**
 	 * Removes null values from array.
 	 *
-	 * @param array $array
+	 * @param array $data
 	 *
 	 * @return array
 	 */
-	private function filterData( $array ) {
+	private function filterData( $data ) {
 		return array_filter(
-			$array,
+			$data,
 			function ( $v ) {
 				return ! is_null( $v );
 			}
