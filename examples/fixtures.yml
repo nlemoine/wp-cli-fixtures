@@ -97,6 +97,8 @@ Hellonico\Fixtures\Entity\Post:
   # CUSTOM POST TYPE
   product{1..15}:
     post_type: product
+    mb_relations:
+      post_to_term: '1x @places*->term_id'
     acf:
       # number field
       price: <numberBetween(10, 200)>

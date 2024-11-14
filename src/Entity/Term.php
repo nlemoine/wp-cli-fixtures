@@ -14,6 +14,7 @@ class Term extends Entity {
 	public $description;
 	public $parent;
 	public $acf;
+	public $mb_relations;
 
 	/**
 	 * Constructor.
@@ -95,6 +96,15 @@ class Term extends Entity {
 			foreach ( $this->acf as $name => $value ) {
 				$field = acf_get_field( $name );
 				update_field( $field['key'], $value, $this->taxonomy . '_' . $this->term_id );
+			}
+		}
+
+		// Save MetaBox Relationships
+		if ( defined( 'RWMB_VER' ) && class_exists( 'MB_Relationships_API' ) && ! empty( $this->mb_relations ) && is_array( $this->mb_relations ) ) {
+			foreach ( $this->mb_relations as $mb_rel_id => $object_ids ) {
+				foreach ( $object_ids as $id ) {
+					\MB_Relationships_API::add( $post_id, $id, $mb_rel_id );
+				}
 			}
 		}
 
