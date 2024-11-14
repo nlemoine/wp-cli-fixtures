@@ -1,85 +1,16 @@
 name: Testing
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+  schedule:
+    - cron:  '17 1 * * *' # Run every day on a seemly random time.
 
 jobs:
-  functional:
-    name: Functional - WP ${{ matrix.wp }} on PHP ${{ matrix.php }}
-    continue-on-error: ${{ matrix.experimental == true }}
-    strategy:
-      fail-fast: false
-      matrix:
-        php: ['7.3', '7.4', '8.0']
-        wp: ['latest']
-        test: ["composer behat || composer behat-rerun"]
-        include:
-          - php: '8.0'
-            wp: 'trunk'
-            test: "composer behat || composer behat-rerun"
-          - php: '8.1'
-            wp: 'trunk'
-            experimental: true
-
-    runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mysql:5.7
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=wp_cli_test --entrypoint sh mysql:5.7 -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
-
-    steps:
-      - name: Check out source code
-        uses: actions/checkout@v2
-
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '${{ matrix.php }}'
-          extensions: mysql, zip
-          coverage: none
-          tools: composer:v2
-
-      # - name: Shutdown default MySQL service
-      #   run: sudo service mysql stop
-
-      - name: Start MySQL server
-        run: sudo service mysql start
-
-      - name: Get Composer cache Directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Use Composer cache
-        uses: actions/cache@master
-        with:
-          path: ${{ steps['composer-cache'].outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
-
-      - name: Install dependencies
-        run: composer update --prefer-stable --prefer-dist --no-progress --no-interaction
-
-      - name: Configure DB environment
-        run: |
-          export MYSQL_HOST=127.0.0.1
-          export MYSQL_TCP_PORT=${{ job.services.mysql.ports['3306'] }}
-          echo "WP_CLI_TEST_DBROOTUSER=root" >> $GITHUB_ENV
-          echo "WP_CLI_TEST_DBROOTPASS=root" >> $GITHUB_ENV
-          echo "WP_CLI_TEST_DBUSER=wp_cli_test" >> $GITHUB_ENV
-          echo "WP_CLI_TEST_DBPASS=password1" >> $GITHUB_ENV
-          echo "WP_CLI_TEST_DBHOST=$MYSQL_HOST:$MYSQL_TCP_PORT" >> $GITHUB_ENV
-
-      - name: Prepare test database
-        run: composer prepare-tests
-
-      - name: Check Behat environment
-        run: WP_CLI_TEST_DEBUG_BEHAT_ENV=1 composer behat
-
-      - name: Run Behat
-        env:
-          WP_VERSION: '${{ matrix.wp }}'
-        run: ${{ matrix.test }}
+  test:
+    uses: wp-cli/.github/.github/workflows/reusable-testing.yml@main
+    with:
+        minimum-php: 7.2

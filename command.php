@@ -1,15 +1,13 @@
 <?php
 
-namespace Hellonico\Fixtures;
-
-use WP_CLI;
-
-if (!class_exists('WP_CLI')) {
-    return;
+if ( ! class_exists( 'WP_CLI' ) ) {
+	return;
 }
 
-if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require_once __DIR__ . '/vendor/autoload.php';
+$wp_fixtures_autoloader = __DIR__ . '/vendor/autoload.php';
+
+if ( file_exists( $wp_fixtures_autoloader ) ) {
+	require_once $wp_fixtures_autoloader;
 }
 
-WP_CLI::add_command('fixtures', __NAMESPACE__ . '\\Command');
+WP_CLI::add_command( 'fixtures', 'Hellonico\Fixtures\Command' );

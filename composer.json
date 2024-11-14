@@ -6,21 +6,22 @@
   "authors": [
     {
       "name": "Nicolas Lemoine",
-      "email": "dev@niconico.fr",
-      "homepage": "https://github.com/nlemoine"
+      "email": "nico@n5s.dev",
+      "homepage": "https://n5s.dev/"
     }
   ],
   "homepage": "https://github.com/nlemoine/wp-cli-fixtures",
   "require": {
-    "php": "^7.3 || ^8.0",
+    "php": "^8.0",
     "fakerphp/faker": "^1.20",
     "nelmio/alice": "^3.8",
-    "wp-cli/wp-cli": "^2.4"
+    "wp-cli/db-command": "^2.0",
+    "wp-cli/entity-command": "^2.0"
   },
   "require-dev": {
-    "wp-cli/db-command": "^2.0",
-    "wp-cli/entity-command": "^2.0",
-    "wp-cli/wp-cli-tests": "^3.1"
+    "ergebnis/composer-normalize": "^2.44",
+    "slevomat/coding-standard": "^8.14",
+    "wp-cli/wp-cli-tests": "^4.2"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -34,7 +35,8 @@
   },
   "config": {
     "allow-plugins": {
-      "dealerdirect/phpcodesniffer-composer-installer": true
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "ergebnis/composer-normalize": true
     },
     "process-timeout": 1800
   },
@@ -42,6 +44,7 @@
     "behat": "run-behat-tests",
     "behat-rerun": "rerun-behat-tests",
     "lint": "run-linter-tests",
+    "phpcbf": "run-phpcbf-cleanup",
     "phpcs": "run-phpcs-tests",
     "phpunit": "run-php-unit-tests",
     "prepare-tests": "install-package-tests",
