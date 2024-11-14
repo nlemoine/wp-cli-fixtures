@@ -5,129 +5,128 @@ namespace Hellonico\Fixtures\Entity;
 use WP_CLI;
 use WP_Query;
 
-class NavMenuItem extends Post
-{
-    public $menu_item_object_id;
-    public $menu_item_object;
-    public $menu_item_parent_id;
-    public $menu_item_position;
-    public $menu_item_type;
-    public $menu_item_title;
-    public $menu_item_url;
-    public $menu_item_description;
-    public $menu_item_attr_title;
-    public $menu_item_target;
-    public $menu_item_classes;
-    public $menu_item_xfn;
-    public $menu_item_status = 'publish';
-    public $menu_id;
+class NavMenuItem extends Post {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function persist()
-    {
-        if (!$this->ID) {
-            return false;
-        }
+	public $menu_item_object_id;
+	public $menu_item_object;
+	public $menu_item_parent_id;
+	public $menu_item_position;
+	public $menu_item_type;
+	public $menu_item_title;
+	public $menu_item_url;
+	public $menu_item_description;
+	public $menu_item_attr_title;
+	public $menu_item_target;
+	public $menu_item_classes;
+	public $menu_item_xfn;
+	public $menu_item_status = 'publish';
+	public $menu_id;
 
-        // Change post before updating
-        global $wpdb;
-        $wpdb->update(
-            $wpdb->posts,
-            [
-                'post_type' => 'nav_menu_item',
-            ],
-            [
-                'ID' => $this->ID,
-            ]
-        );
-        clean_post_cache($this->ID);
+	/**
+	 * {@inheritdoc}
+	 */
+	public function persist() {
+		if ( ! $this->ID ) {
+			return false;
+		}
 
-        $data = $this->transformData($this->getData());
+		// Change post before updating
+		global $wpdb;
+		$wpdb->update(
+			$wpdb->posts,
+			[
+				'post_type' => 'nav_menu_item',
+			],
+			[
+				'ID' => $this->ID,
+			]
+		);
+		clean_post_cache( $this->ID );
 
-        $post_id = wp_update_nav_menu_item($this->menu_id, $this->ID, $data);
+		$data = $this->transformData( $this->getData() );
 
-        // Handle errors
-        if (is_wp_error($post_id)) {
-            wp_delete_post($this->ID, true);
-            WP_CLI::error(html_entity_decode($post_id->get_error_message()), false);
-            WP_CLI::error(sprintf('An error occured while updating the post ID %d, it has been deleted.', $this->ID), false);
-            $this->setCurrentId(false);
+		$post_id = wp_update_nav_menu_item( $this->menu_id, $this->ID, $data );
 
-            return false;
-        }
+		// Handle errors
+		if ( is_wp_error( $post_id ) ) {
+			wp_delete_post( $this->ID, true );
+			WP_CLI::error( html_entity_decode( $post_id->get_error_message() ), false );
+			WP_CLI::error( sprintf( 'An error occured while updating the post ID %d, it has been deleted.', $this->ID ), false );
+			$this->setCurrentId( false );
 
-        return true;
-    }
+			return false;
+		}
 
-    private function transformData(array $data)
-    {
-        unset($data['tax_input'], $data['post_category'], $data['ID'], $data['menu-id']);
-        foreach ($data as $key => $item) {
-            if (false === strpos($key, 'menu_')) {
-                unset($data[$key]);
+		return true;
+	}
 
-                continue;
-            }
+	private function transformData( array $data ) {
+		unset( $data['tax_input'], $data['post_category'], $data['ID'], $data['menu-id'] );
+		foreach ( $data as $key => $item ) {
+			if ( false === strpos( $key, 'menu_' ) ) {
+				unset( $data[ $key ] );
 
-            // Get properties for objects
-            if ($key === 'menu_item_object' && $item instanceof Entity) {
-                if ($item instanceof Post) {
-                    $data['menu-item-type']      = 'post_type';
-                    $data['menu-item-object']    = $item->post_type;
-                    $data['menu-item-object-id'] = $item->ID;
-                    unset($data[$key]);
+				continue;
+			}
 
-                    continue;
-                }
-                if ($item instanceof Term) {
-                    $data['menu-item-type']      = 'taxonomy';
-                    $data['menu-item-object']    = $item->taxonomy;
-                    $data['menu-item-object-id'] = $item->term_id;
-                    unset($data[$key]);
+			// Get properties for objects
+			if ( $key === 'menu_item_object' && $item instanceof Entity ) {
+				if ( $item instanceof Post ) {
+					$data['menu-item-type']      = 'post_type';
+					$data['menu-item-object']    = $item->post_type;
+					$data['menu-item-object-id'] = $item->ID;
+					unset( $data[ $key ] );
 
-                    continue;
-                }
-            }
+					continue;
+				}
+				if ( $item instanceof Term ) {
+					$data['menu-item-type']      = 'taxonomy';
+					$data['menu-item-object']    = $item->taxonomy;
+					$data['menu-item-object-id'] = $item->term_id;
+					unset( $data[ $key ] );
 
-            // Transform keys
-            $data[str_replace('_', '-', $key)] = $data[$key];
-            unset($data[$key]);
-        }
+					continue;
+				}
+			}
 
-        return $data;
-    }
+			// Transform keys
+			$data[ str_replace( '_', '-', $key ) ] = $data[ $key ];
+			unset( $data[ $key ] );
+		}
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function delete()
-    {
-        $query = new WP_Query([
-            'fields'     => 'ids',
-            'meta_query' => [
-                [
-                    'key'   => '_fake',
-                    'value' => true,
-                ],
-            ],
-            'post_status'    => 'any',
-            'post_type'      => 'nav_menu_item',
-            'posts_per_page' => -1,
-        ]);
+		return $data;
+	}
 
-        if (empty($query->posts)) {
-            WP_CLI::line(WP_CLI::colorize('%BInfo:%n No fake navmenuitems to delete'));
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function delete() {
+		$query = new WP_Query(
+			[
+				'fields'         => 'ids',
+				'meta_query'     => [
+					[
+						'key'   => '_fake',
+						'value' => true,
+					],
+				],
+				'post_status'    => 'any',
+				'post_type'      => 'nav_menu_item',
+				'posts_per_page' => -1,
+			]
+		);
 
-            return false;
-        }
+		if ( empty( $query->posts ) ) {
+			WP_CLI::line( WP_CLI::colorize( '%BInfo:%n No fake navmenuitems to delete' ) );
 
-        foreach ($query->posts as $id) {
-            wp_delete_post($id, true);
-        }
-        $count = count($query->posts);
+			return false;
+		}
 
-        WP_CLI::success(sprintf('%s navmenuitem%s have been successfully deleted', $count, $count > 1 ? 's' : ''));
-    }
+		foreach ( $query->posts as $id ) {
+			wp_delete_post( $id, true );
+		}
+		$count = count( $query->posts );
+
+		WP_CLI::success( sprintf( '%s navmenuitem%s have been successfully deleted', $count, $count > 1 ? 's' : '' ) );
+	}
 }

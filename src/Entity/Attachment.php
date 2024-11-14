@@ -5,131 +5,132 @@ namespace Hellonico\Fixtures\Entity;
 use WP_CLI;
 use WP_Query;
 
-class Attachment extends Post
-{
-    public $file;
-    public $post_type   = 'attachment';
-    public $post_status = 'inherit';
+class Attachment extends Post {
 
-    /**
-     * {@inheritdoc}
-     */
-    public function create()
-    {
-        $this->ID = wp_insert_post([
-            'post_title'  => sprintf('attachment-%s', uniqid()),
-            'post_type'   => $this->post_type,
-            'post_status' => $this->post_status,
-        ]);
-        update_post_meta($this->ID, '_fake', true);
-    }
+	public $file;
+	public $post_type   = 'attachment';
+	public $post_status = 'inherit';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function persist()
-    {
-        if (!$this->ID || empty($this->file)) {
-            if (is_file($this->file)) {
-                @unlink($this->file);
-            }
-            WP_CLI::error(sprintf('An error occured while updating the attachment ID %s, it has been deleted.', $this->file), false);
-            wp_delete_attachment($this->ID, true);
+	/**
+	 * {@inheritdoc}
+	 */
+	public function create() {
+		$this->ID = wp_insert_post(
+			[
+				'post_title'  => sprintf( 'attachment-%s', uniqid() ),
+				'post_type'   => $this->post_type,
+				'post_status' => $this->post_status,
+			]
+		);
+		update_post_meta( $this->ID, '_fake', true );
+	}
 
-            return false;
-        }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function persist() {
+		if ( ! $this->ID || empty( $this->file ) ) {
+			if ( is_file( $this->file ) ) {
+				@unlink( $this->file );
+			}
+			WP_CLI::error( sprintf( 'An error occured while updating the attachment ID %s, it has been deleted.', $this->file ), false );
+			wp_delete_attachment( $this->ID, true );
 
-        $file_name  = basename($this->file);
-        $upload_dir = wp_upload_dir();
+			return false;
+		}
 
-        // Image has been saved to sys temp dir
-        if (false === strpos($this->file, $upload_dir['basedir'])) {
-            $upload = wp_upload_bits($file_name, null, file_get_contents($this->file));
-            if ($upload['error']) {
-                wp_delete_attachment($this->ID, true);
-                WP_CLI::error(sprintf('An error occured while updating the attachment ID %d, it has been deleted.', $this->ID), false);
-                $this->setCurrentId(false);
+		$file_name  = basename( $this->file );
+		$upload_dir = wp_upload_dir();
 
-                return false;
-            } else {
-                $this->file = $upload['file'];
-            }
-        }
+		// Image has been saved to sys temp dir
+		if ( false === strpos( $this->file, $upload_dir['basedir'] ) ) {
+			$upload = wp_upload_bits( $file_name, null, file_get_contents( $this->file ) );
+			if ( $upload['error'] ) {
+				wp_delete_attachment( $this->ID, true );
+				WP_CLI::error( sprintf( 'An error occured while updating the attachment ID %d, it has been deleted.', $this->ID ), false );
+				$this->setCurrentId( false );
 
-        $file_type = wp_check_filetype($file_name);
+				return false;
+			} else {
+				$this->file = $upload['file'];
+			}
+		}
 
-        // Set required attachment properties
-        $this->post_mime_type = $file_type['type'];
-        $this->guid           = $upload_dir['url'] . '/' . $file_name;
+		$file_type = wp_check_filetype( $file_name );
 
-        // Set post title from file name
-        if (empty($this->post_title)) {
-            $this->post_title = sanitize_file_name(pathinfo($file_name, PATHINFO_FILENAME));
-        }
+		// Set required attachment properties
+		$this->post_mime_type = $file_type['type'];
+		$this->guid           = $upload_dir['url'] . '/' . $file_name;
 
-        // Update entity
-        $attachment_id = wp_insert_attachment($this->getData(), $this->file);
+		// Set post title from file name
+		if ( empty( $this->post_title ) ) {
+			$this->post_title = sanitize_file_name( pathinfo( $file_name, PATHINFO_FILENAME ) );
+		}
 
-        // Update guid and slug (can't be updated once post is created)
-        global $wpdb;
-        $wpdb->update(
-            $wpdb->posts,
-            [
-                'guid'      => $this->guid,
-                'post_name' => sanitize_title($this->post_title),
-            ],
-            [
-                'ID' => $this->ID,
-            ]
-        );
+		// Update entity
+		$attachment_id = wp_insert_attachment( $this->getData(), $this->file );
 
-        // Handle errors
-        if (empty($attachment_id)) {
-            wp_delete_attachment($this->ID, true);
-            WP_CLI::error(sprintf('An error occured while updating the attachment ID %d, it has been deleted.', $this->ID), false);
-            $this->setCurrentId(false);
+		// Update guid and slug (can't be updated once post is created)
+		global $wpdb;
+		$wpdb->update(
+			$wpdb->posts,
+			[
+				'guid'      => $this->guid,
+				'post_name' => sanitize_title( $this->post_title ),
+			],
+			[
+				'ID' => $this->ID,
+			]
+		);
 
-            return false;
-        }
+		// Handle errors
+		if ( empty( $attachment_id ) ) {
+			wp_delete_attachment( $this->ID, true );
+			WP_CLI::error( sprintf( 'An error occured while updating the attachment ID %d, it has been deleted.', $this->ID ), false );
+			$this->setCurrentId( false );
 
-        // Generate attachment metadata
-        $attachment_data = wp_generate_attachment_metadata($attachment_id, $this->file);
+			return false;
+		}
 
-        // Assign metadata to attachment
-        wp_update_attachment_metadata($attachment_id, $attachment_data);
+		// Generate attachment metadata
+		$attachment_data = wp_generate_attachment_metadata( $attachment_id, $this->file );
 
-        return parent::persist();
-    }
+		// Assign metadata to attachment
+		wp_update_attachment_metadata( $attachment_id, $attachment_data );
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function delete()
-    {
-        $query = new WP_Query([
-            'fields'     => 'ids',
-            'meta_query' => [
-                [
-                    'key'   => '_fake',
-                    'value' => true,
-                ],
-            ],
-            'post_status'    => 'any',
-            'post_type'      => 'attachment',
-            'posts_per_page' => -1,
-        ]);
+		return parent::persist();
+	}
 
-        if (empty($query->posts)) {
-            WP_CLI::line(WP_CLI::colorize('%BInfo:%n No fake attachments to delete'));
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function delete() {
+		$query = new WP_Query(
+			[
+				'fields'         => 'ids',
+				'meta_query'     => [
+					[
+						'key'   => '_fake',
+						'value' => true,
+					],
+				],
+				'post_status'    => 'any',
+				'post_type'      => 'attachment',
+				'posts_per_page' => -1,
+			]
+		);
 
-            return false;
-        }
+		if ( empty( $query->posts ) ) {
+			WP_CLI::line( WP_CLI::colorize( '%BInfo:%n No fake attachments to delete' ) );
 
-        foreach ($query->posts as $id) {
-            wp_delete_attachment($id, true);
-        }
-        $count = count($query->posts);
+			return false;
+		}
 
-        WP_CLI::success(sprintf('%s attachment%s have been successfully deleted', $count, $count > 1 ? 's' : ''));
-    }
+		foreach ( $query->posts as $id ) {
+			wp_delete_attachment( $id, true );
+		}
+		$count = count( $query->posts );
+
+		WP_CLI::success( sprintf( '%s attachment%s have been successfully deleted', $count, $count > 1 ? 's' : '' ) );
+	}
 }
