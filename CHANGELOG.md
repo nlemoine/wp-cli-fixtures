@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/nlemoine/wp-cli-fixtures/compare/0.5.0...0.5.1) (2025-08-29)
+
+
+### Bug Fixes
+
+* Add `comment_type` to `Comment` entity ([3455c20](https://github.com/nlemoine/wp-cli-fixtures/commit/3455c20960cdf4caecf7cd7e1bdd2583b85b18bf))
+
 ## [0.5.0](https://github.com/nlemoine/wp-cli-fixtures/compare/0.4.0...0.5.0) (2024-11-14)
 
 
