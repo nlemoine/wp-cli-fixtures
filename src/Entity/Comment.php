@@ -19,6 +19,7 @@ class Comment extends Entity {
 	public $comment_agent;
 	public $comment_author_IP;
 	public $comment_approved;
+	public $comment_type;
 	public $comment_karma;
 	public $comment_meta;
 
