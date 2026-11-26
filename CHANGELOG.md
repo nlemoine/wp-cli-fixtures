@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/nlemoine/wp-cli-fixtures/compare/0.5.1...0.5.2) (2026-11-26)
+
+
+### Miscellaneous Chores
+
+* add GitHub Sponsors to composer funding ([e90fb7f](https://github.com/nlemoine/wp-cli-fixtures/commit/e90fb7f8c07103be50a62128a0bcda260079413f))
+
 ## [0.5.1](https://github.com/nlemoine/wp-cli-fixtures/compare/0.5.0...0.5.1) (2025-08-29)
 
 
