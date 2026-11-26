@@ -11,6 +11,12 @@
     }
   ],
   "homepage": "https://github.com/nlemoine/wp-cli-fixtures",
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/nlemoine"
+    }
+  ],
   "require": {
     "php": "^8.0",
     "fakerphp/faker": "^1.20",
